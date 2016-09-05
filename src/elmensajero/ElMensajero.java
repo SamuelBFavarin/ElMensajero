@@ -13,10 +13,10 @@ import elmensajero.gui.ElMensajeroGUI;
  */
 public class ElMensajero {
 
-    public ElMensajero() {
-        ElMensajeroGUI gui = new ElMensajeroGUI();
+    public ElMensajero(String[] args) {
+        ElMensajeroGUI gui = new ElMensajeroGUI(args);
     }
     public static void main(String[] args){
-        new ElMensajero();
+        new ElMensajero(args);
     }
 }
