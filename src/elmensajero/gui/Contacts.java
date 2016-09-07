@@ -38,7 +38,7 @@ public class Contacts extends VBox{
         
         list.setItems(contacts);
         
-        list.setCellFactory(lv -> {
+        /*list.setCellFactory(lv -> {
             return new ListCell<Contact>(){
                 Rectangle rect = new Rectangle(10,10);
                 @Override
@@ -50,8 +50,8 @@ public class Contacts extends VBox{
                         setGraphic(rect);
                     }
                 }
-            };                
-        });
+            };               
+        });*/
         
 
         

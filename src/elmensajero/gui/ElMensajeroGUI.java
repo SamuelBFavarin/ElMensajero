@@ -36,7 +36,6 @@ public class ElMensajeroGUI extends BorderPane {
         
         Scene scene = new Scene( this, 800, 500 );
         stage.setTitle("El Mensagero");
-        stage.setMinWidth(700);
         stage.setScene(scene);
         stage.show();
         
