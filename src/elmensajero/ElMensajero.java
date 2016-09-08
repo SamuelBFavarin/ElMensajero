@@ -61,6 +61,8 @@ public class ElMensajero extends Application {
         
         gui.setUserData(userData);
         addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
+        addContact(new Contact("Fulano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
+        addContact(new Contact("Sicrano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
         
     }
     

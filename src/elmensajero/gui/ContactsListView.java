@@ -77,6 +77,7 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
             super.updateItem(contact, empty);
             if ( empty ){ 
                 setText(null);
+                setGraphic(null);
                 return;
             };
             setText(contact.getName());
