@@ -7,7 +7,10 @@ package elmensajero;
  */
 public class Contact {
     private String name, email, image;
-    private int status;
+    private Status status;
+
+    public enum Status { ONLINE, OFFLINE; }
+    
     /**
      *
      * @author Vinicius
@@ -15,10 +18,11 @@ public class Contact {
      * @param email
      * @param image
      */
-    public Contact(String name, String email, String image) {
+    public Contact(String name, String email, String image, Status status) {
         this.name = name;
         this.email = email;
         this.image = image;
+        this.status = status;
     }
 
     public String getEmail() {
@@ -33,6 +37,10 @@ public class Contact {
         return name;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -45,6 +53,8 @@ public class Contact {
         this.name = name;
     }
 
-    
+    public void setStatus(Status status) {
+        this.status = status;
+    }
     
 }
