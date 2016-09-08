@@ -1,50 +1,29 @@
 
 package elmensajero.gui;
 
-
-
-import javafx.scene.control.ToolBar;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 /**
- *
+ * classe Conversation
+ * Gera toda a parte de interface gráfica da conversa
+ *    -Contato do parceiro de comversa
+ *    -Botões e áreas para envio de mensagem
+ *    -Troca de mensagens
+ * 
  * @author Samuel
- * Let's go guys 
+ * @see javafx.beans.value.ChangeListener
  */
-class Conversation extends BorderPane {
-
-    public Conversation() {
-        VBox vbox = new VBox();
-        
-        
-        Image imgAvatar1 = new Image("file://avatar1.jpg");
-        ImageView avatar1 = new ImageView(imgAvatar1);
-        avatar1.setFitWidth(100);
-        avatar1.setPreserveRatio(true);
-        avatar1.setSmooth(true);
-        avatar1.setCache(true);
-        
-        Image imgAvatar2 = new Image("file://avatar2.jpg");
-        ImageView avatar2 = new ImageView(imgAvatar2);
-        avatar2.setFitWidth(100);
-        avatar2.setPreserveRatio(true);
-        avatar2.setSmooth(true);
-        avatar2.setCache(true);
-        
-        
-        vbox.setPrefWidth(200);
-        vbox.setStyle("-fx-background-color: #336699;");
-        vbox.getChildren().add(avatar1);
-        vbox.getChildren().add(avatar2);
-        this.setLeft(vbox);
-        
-        
-        
-        
-    }
+class Conversation extends BorderPane  {
+    /**
+     * Construtor da classe Conversation.
+     * Inicializa a classe adicionado a sua esquerda uma instancia da 
+     * classe ConversationLeftPane e a sua direita uma instancia da
+     * classe ConversationMainPane
+     * 
+    */
     
+    public Conversation() {
+        this.setLeft(new ConversationLeftPane());  
+        this.setCenter(new ConversationMainPane()); 
+    }
 }
