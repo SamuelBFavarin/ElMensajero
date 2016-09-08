@@ -1,4 +1,6 @@
-/build/
-/dist/
-nbproject/UPDATED.TXT
-nbproject/private/private.properties
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
