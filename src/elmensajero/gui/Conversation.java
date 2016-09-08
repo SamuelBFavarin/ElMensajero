@@ -1,75 +1,147 @@
 
 package elmensajero.gui;
 
-
-
 import elmensajero.Message;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+import javafx.scene.effect.DropShadow;
 
 /**
  *
  * @author Samuel
- * This class make 
  */
-class Conversation extends BorderPane {
+class Conversation extends BorderPane implements ChangeListener {
     
+    private boolean fixScrollFlag;
+    private ScrollPane scroll;
     private VBox messages;
 
     public Conversation() {
         
+        fixScrollFlag = false;
         this.setLeft(initLeftBox());  
         this.setCenter(initMainBox());
+        
+        new Thread(new Runnable() {
+            @Override public void run() {
+                setMessages(new Message[]{
+                    new Message(null, null, "OIIII", null),
+                    new Message(null, null, "Gatinhooooooooooooooooooo!!!", null),
+                    new Message(null, null, "Passa teu número", null),
+                    new Message(null, null, "Quero nudes", null),
+                    new Message(null, null, "Quero nudes", null),
+                    new Message(null, null, "Quero nudes", null),
+                    new Message(null, null, "Quero nudes", null),
+                    new Message(null, null, "POR FAVOR", null),
+                    new Message(null, null, "quer ver fotos nuas minhas ?", null),
+                    new Message(null, null, "www.meguinhafoxnudesexmais18.com.br", null),
+                    new Message(null, null, "To te esperando", null),
+                    new Message(null, null, "Não vai acessar ?", null),
+                    new Message(null, null, "teste", null),
+                    new Message(null, null, "teste", null)
+                });
+                for (int i = 1; i < 15; i++){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {}
+                    addMessage( new Message(null, null, "teste "+i, null) );
+                }
+            }
+        }).start();
     }
     
+    /**
+     * Metodo chamado pela interface.
+     * Chamado quando ha alguma mudanca na altura do VBox
+     * correspondente a lista das mensagens, usado para corrigir o 
+     * scroll para deixar rolado o maximo para baixo se a conversa
+     * foi aberta no momento ou entao se estava no mais abaixo possivel
+     * e foi adicionada uma mensagem e para continuar o mais abaixo
+     * 
+     * @see javafx.beans.value.ChangeListener
+     * 
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     */
+    @Override
+    public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        if ( fixScrollFlag ){
+            scroll.setVvalue( 1d );
+            fixScrollFlag = false;
+        }            
+    }
+    
+    /**
+     * Adiciona uma mensagem para a interface grafica.
+     * Cria o elemento da interface grafica e o adiciona ao 
+     * VBox das mensagens. Define tambem a flag de correcao
+     * do scroll caso necessario
+     * 
+     * @see javafx.scene.layout.VBox
+     * @see elmensajero.gui.MessageBox
+     * @see elmensajero.Message
+     * 
+     * @param message
+     */
     public void addMessage(final Message message){
         
         final MessageBox box = new MessageBox(message,true);
         Platform.runLater(new Runnable() {
-
-            @Override
-            public void run() {
-               messages.getChildren().add(box);
-               messages.setAlignment(Pos.TOP_RIGHT);
+            @Override public void run() {
+                messages.getChildren().add(box);
+                if ( scroll.getVvalue() == 1d ){
+                    fixScrollFlag = true;
+                }
+//                messages.setAlignment(Pos.TOP_RIGHT);
             }
         });
 
     }
     
-    public void addMessages(final Message[] message){
+    /**
+     * Retira as mensagens existentes e adiciona varias mensagen
+     * para a interface grafica.
+     * Limpa a VBox das mensagens e cria os elementos da interface
+     * grafica e os adiciona ao VBox das mensagens. Define tambem a
+     * flag de correcao
+     * 
+     * @see javafx.scene.layout.VBox
+     * @see elmensajero.gui.MessageBox
+     * @see elmensajero.Message
+     * 
+     * @param message
+     */
+    public void setMessages(final Message[] message){
+        
         final MessageBox[] boxes = new MessageBox[message.length];
         
-        for(int i=0; i< message.length;i++ ){
-            boxes[i]=new MessageBox(message[i],false);
+        for(int i = 0; i < message.length; i++){
+            boxes[i] = new MessageBox( message[i], false );
         }
         Platform.runLater(new Runnable() {
-
             @Override
             public void run() {
-               messages.getChildren().addAll(boxes);
+                messages.getChildren().setAll(boxes);
+                fixScrollFlag = true;
             }
         });
     }
-    
     
     private Node initMainBox(){
         BorderPane mainbox = new BorderPane();
@@ -80,32 +152,14 @@ class Conversation extends BorderPane {
         messages = new VBox();
         messages.setSpacing(5);
         messages.paddingProperty().set(new Insets(50,20,15,20));
-        messages.setAlignment(Pos.BOTTOM_LEFT);
-       
-        addMessage(new Message(null, null, "OIIII", null));
-        addMessage(new Message(null, null, "Gatinhooooooooooooooooooo!!!", null));
-        addMessage(new Message(null, null, "Passa teu número", null));
-        addMessage(new Message(null, null, "Quero nudes", null));
-        addMessage(new Message(null, null, "Quero nudes", null));
-        addMessage(new Message(null, null, "Quero nudes", null));
-        addMessage(new Message(null, null, "Quero nudes", null));
-        addMessage(new Message(null, null, "POR FAVOR", null));
-        addMessage(new Message(null, null, "quer ver fotos nuas minhas ?", null));
-        addMessage(new Message(null, null, "www.meguinhafoxnudesexmais18.com.br", null));
-        addMessage(new Message(null, null, "To te esperando", null));
-        addMessage(new Message(null, null, "Não vai acessar ?", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-        addMessage(new Message(null, null, "teste", null));
-   
+        messages.setAlignment(Pos.BOTTOM_LEFT);   
+        messages.heightProperty().addListener( this );
         
-        ScrollPane scroll = initScrollPane();
+        scroll = initScrollPane();
+        
         mainbox.setCenter(scroll);
         mainbox.setBottom(bottomArea);
+        
         return mainbox;
     }
     
@@ -121,13 +175,12 @@ class Conversation extends BorderPane {
         return hbox;
     }
     private ScrollPane initScrollPane(){
-        ScrollPane scroll = new ScrollPane();
-        scroll.setContent(messages);
-        scroll.setStyle("-fx-background-color: #20B2AA;");
-        scroll.setMaxHeight(500);
-        //scroll.setVvalue(1.0);
-        //scroll.setVvalue(-10);
-        return scroll;
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(messages);
+        scrollPane.setStyle("-fx-background-color: #20B2AA;");
+//        scrollPane.setMaxHeight(500);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        return scrollPane;
     }
     
     private TextArea initTextArea(){
@@ -143,10 +196,12 @@ class Conversation extends BorderPane {
         send.setMinSize(125, 125);
         send.setTextFill(Color.web("#FFFFFF"));
         send.setStyle(
-                "-fx-font-size: 20pt;"
-              + "-fx-background-color:#008B8B;");
+            "-fx-font-size: 20pt;"
+          + "-fx-background-color:#008B8B;"
+        );
         return send;
     }
+    
     private Node initLeftBox(){
         VBox vbox = new VBox();
         Label friendName = initFriendName();
@@ -182,8 +237,8 @@ class Conversation extends BorderPane {
         return avatar;
     }
 
-    private void setOnSelectionChanged(EventHandler<Event> eventHandler) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    private void setOnSelectionChanged(EventHandler<Event> eventHandler) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
     
 }
