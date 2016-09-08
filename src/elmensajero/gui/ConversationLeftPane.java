@@ -28,7 +28,7 @@ public class ConversationLeftPane extends VBox {
         Label friendName = initFriendName();
         ImageView friendImage = initFriendImage();
         this.setPrefWidth(200);
-        this.setStyle("-fx-background-color: #008B8B;");
+        this.setStyle("-fx-background-color: #1a1a1a");
         this.setSpacing(2);
         this.getChildren().add(friendName);
         this.getChildren().add(friendImage);      

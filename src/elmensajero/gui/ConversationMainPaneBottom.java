@@ -4,6 +4,7 @@ package elmensajero.gui;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
@@ -48,6 +49,7 @@ public class ConversationMainPaneBottom extends HBox {
         txtArea.setMaxHeight(125);
         txtArea.setWrapText(true);
         txtArea.setStyle("-fx-font-size: 15pt;");
+        txtArea.setEffect(new DropShadow(6, Color.BLACK));  
         return txtArea; 
     }
     
@@ -63,7 +65,7 @@ public class ConversationMainPaneBottom extends HBox {
         send.setTextFill(Color.web("#FFFFFF"));
         send.setStyle(
             "-fx-font-size: 15pt;"
-          + "-fx-background-color:#008B8B;"
+          + "-fx-background-color: #1a1a1a"
         );
         return send;
     }

@@ -9,8 +9,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -45,7 +47,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     */
     public ConversationMainPane() {
         fixScrollFlag = false;
-        this.setStyle("-fx-background-color: #20B2AA;");
+        this.setStyle("-fx-background-color: white");
         
         initMessages();
         scroll = initScrollPane();
@@ -151,8 +153,8 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     private ScrollPane initScrollPane(){
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(messages);
-        scrollPane.setStyle("-fx-background-color: #FFFFFF;");
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setEffect(new DropShadow(10, Color.BLACK)); 
         return scrollPane;
     }
     
@@ -165,7 +167,8 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         messages = new VBox();
         messages.setSpacing(5);
         messages.paddingProperty().set(new Insets(50,20,15,20));
-        messages.setAlignment(Pos.BOTTOM_LEFT);  
+        messages.setAlignment(Pos.BOTTOM_LEFT);
         messages.heightProperty().addListener( this );
     }
+    
 }
