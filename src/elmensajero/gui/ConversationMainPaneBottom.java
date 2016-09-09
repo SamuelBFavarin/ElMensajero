@@ -2,6 +2,7 @@
 package elmensajero.gui;
 
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
@@ -22,7 +23,7 @@ public class ConversationMainPaneBottom extends HBox {
     /**
     * classe ConversationMainPaneBottom.
     * Instacina o TextArea com a função initTextArea
-    * Instancia o Botao com a funçao initSendButton
+    * Instancia dois Botões com a funçao initButton
     * Define as margens do botao e do TextArea
     * Adiciona ambos no HBox
     * 
@@ -30,12 +31,15 @@ public class ConversationMainPaneBottom extends HBox {
     */
     public ConversationMainPaneBottom() {
         TextArea txtArea = initTextArea();
-        Button sendButton = initSendButton();
+        Button sendButton = initButton("ENVIAR");
+        Button arribaButton = initButton("ARRIBA");
 
-        this.setMargin(txtArea,new Insets(50,20,15,20));
-        this.setMargin(sendButton,new Insets(50,10,0,0));
+        this.setMargin(txtArea,new Insets(50,20,15,15));
+        this.setMargin(sendButton,new Insets(50,15,0,15));
+        this.setMargin(arribaButton,new Insets(50,15,0,0));
         this.getChildren().add(txtArea);
         this.getChildren().add(sendButton);
+        this.getChildren().add(arribaButton);
     }
     
     /**
@@ -59,15 +63,16 @@ public class ConversationMainPaneBottom extends HBox {
     * 
     * @see javafx.beans.value.ChangeListener
     */
-    private Button initSendButton(){
-        Button send = new Button("ENVIAR");
-        send.setMinSize(125, 125);
-        send.setTextFill(Color.web("#FFFFFF"));
-        send.setStyle(
+    private Button initButton(String name){
+        Button btn = new Button(name);
+        btn.setCursor(Cursor.HAND);
+        btn.setMinSize(125, 125);
+        btn.setTextFill(Color.web("#FFFFFF"));
+        btn.setStyle(
             "-fx-font-size: 15pt;"
           + "-fx-background-color: #1a1a1a"
         );
-        return send;
+        return btn;
     }
     
     

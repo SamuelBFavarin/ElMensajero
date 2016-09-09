@@ -154,7 +154,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(messages);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setEffect(new DropShadow(10, Color.BLACK)); 
+        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
         return scrollPane;
     }
     

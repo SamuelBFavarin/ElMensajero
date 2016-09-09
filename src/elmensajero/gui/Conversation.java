@@ -1,7 +1,9 @@
 
 package elmensajero.gui;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 
 /**
  * classe Conversation
@@ -17,13 +19,15 @@ class Conversation extends BorderPane  {
     /**
      * Construtor da classe Conversation.
      * Inicializa a classe adicionado a sua esquerda uma instancia da 
-     * classe ConversationLeftPane e a sua direita uma instancia da
+     * classe ConversationTopPane e a sua direita uma instancia da
      * classe ConversationMainPane
+     * Define uma sombra
      * 
     */
     
     public Conversation() {
-        this.setLeft(new ConversationLeftPane());  
+        this.setEffect(new DropShadow(5, Color.BLACK));  
+        this.setTop(new ConversationTopPane());  
         this.setCenter(new ConversationMainPane()); 
     }
 }
