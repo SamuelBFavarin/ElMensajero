@@ -1,6 +1,9 @@
 
 package elmensajero.gui;
 
+import elmensajero.ArribaButtonEvent;
+import elmensajero.SendButtonEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -32,7 +35,9 @@ public class ConversationMainPaneBottom extends HBox {
     public ConversationMainPaneBottom() {
         TextArea txtArea = initTextArea();
         Button sendButton = initButton("ENVIAR");
+        sendButton.setOnAction(new SendButtonEvent());
         Button arribaButton = initButton("ARRIBA");
+        arribaButton.setOnAction(new ArribaButtonEvent());
 
         this.setMargin(txtArea,new Insets(50,20,15,15));
         this.setMargin(sendButton,new Insets(50,15,0,15));
@@ -74,6 +79,5 @@ public class ConversationMainPaneBottom extends HBox {
         );
         return btn;
     }
-    
-    
+   
 }
