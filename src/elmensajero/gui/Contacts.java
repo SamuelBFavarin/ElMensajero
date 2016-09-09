@@ -58,6 +58,7 @@ class Contacts extends BorderPane{
         this.setCenter( contactsListView );
         this.setPadding(new Insets(2,2,2,2));
         
+
         this.setPrefWidth(200);
         this.setMaxWidth(300);
     }
