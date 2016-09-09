@@ -16,7 +16,7 @@ import javafx.stage.Stage;
  * 
  * @see javafx.scene.Scene
  * 
- * @author Vinicius, Samuel, Lucas
+ * @author Vinicius
  */
 public class ElMensajeroGUI extends BorderPane {
     
@@ -59,6 +59,8 @@ public class ElMensajeroGUI extends BorderPane {
     
     /**
      * Define a classe como o scene da stage e mostra o stage.
+     * Calula tambem a nova posicao de X e Y para centralizar 
+     * no mesmo lugar a nova tela
      * 
      * @see javafx.stage.Stage
      * @see javafx.scene.Scene
@@ -66,10 +68,10 @@ public class ElMensajeroGUI extends BorderPane {
     public void show(){
         Platform.runLater(() -> {
             stage.setTitle("El Mensajero");
+            stage.setY( stage.getY() - stage.getY()*stage.getY()/HEIGHT/2 );
+            stage.setX( stage.getX() - stage.getX()*stage.getX()/WIDTH/2 );
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setX(stage.getX() + stage.getWidth() / 2 - childStage.getWidth() / 2);
-            stage.setY(stage.getY() + stage.getHeight() / 2 - childStage.getHeight() / 2);
             stage.setScene(scene);
             stage.show();
         });
