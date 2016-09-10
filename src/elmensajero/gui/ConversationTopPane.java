@@ -1,6 +1,11 @@
 
 package elmensajero.gui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.stream.Stream;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -23,14 +28,14 @@ public class ConversationTopPane extends StackPane {
  
  private String imgURL = "http://sizlingpeople.com/wp-content/uploads/2016/05/Megan-Fox-Instagram.jpg";
  private String frindName= "Megan Fox";
- private String logo= "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Facebook_Messenger_logo.svg/2000px-Facebook_Messenger_logo.svg.png";
+
  /**
  * Construtor da classe ConversationTopPane
  * Define o designer da tela, com cor e espaçamento dos elementos
  * Chama as funções da classe
  * 
  */
-    public ConversationTopPane() {
+    public ConversationTopPane() throws FileNotFoundException {
         Label friendName = initFriendName();
         ImageView friendImage = initFriendImage();
         ImageView logoImage = initLogoImage();
@@ -84,9 +89,8 @@ public class ConversationTopPane extends StackPane {
     * Define sombra
     */
     
-    private ImageView initLogoImage(){
-        Image imgLogo = new Image(logo);
-        ImageView logo = new ImageView(imgLogo);
+    private ImageView initLogoImage() throws FileNotFoundException{
+        ImageView logo = new ImageView(new Image(new FileInputStream("./logo.png")));
         logo.setFitWidth(70);
         logo.setPreserveRatio(true);
         logo.setSmooth(true);
