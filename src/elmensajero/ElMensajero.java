@@ -1,6 +1,7 @@
 
 package elmensajero;
 
+import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,6 +83,7 @@ public class ElMensajero extends Application {
     }
     
     public static void main(String[] args){
+        DatabaseTest test = new DatabaseTest();
         launch(args);
     }
 }
