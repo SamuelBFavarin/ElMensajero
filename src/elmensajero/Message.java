@@ -36,6 +36,5 @@ public class Message {
         return date;
     }
     
-    
-    
+  
 }

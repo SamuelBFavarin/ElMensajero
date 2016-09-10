@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,7 +37,7 @@ public class ConversationTopPane extends StackPane {
  * Chama as funções da classe
  * 
  */
-    public ConversationTopPane() throws FileNotFoundException {
+    public ConversationTopPane() {
         Label friendName = initFriendName();
         ImageView friendImage = initFriendImage();
         ImageView logoImage = initLogoImage();
@@ -89,13 +91,18 @@ public class ConversationTopPane extends StackPane {
     * Define sombra
     */
     
-    private ImageView initLogoImage() throws FileNotFoundException{
-        ImageView logo = new ImageView(new Image(new FileInputStream("./logo.png")));
-        logo.setFitWidth(70);
-        logo.setPreserveRatio(true);
-        logo.setSmooth(true);
-        logo.setCache(true);
-        logo.setEffect(new DropShadow(15, Color.BLACK));
+    private ImageView initLogoImage() {
+        ImageView logo = null;
+        try {
+            logo = new ImageView(new Image(new FileInputStream("./logo.png")));
+            logo.setFitWidth(70);
+            logo.setPreserveRatio(true);
+            logo.setSmooth(true);
+            logo.setCache(true);
+            logo.setEffect(new DropShadow(15, Color.BLACK));
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
         return logo;
     }
    

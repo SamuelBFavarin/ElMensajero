@@ -1,12 +1,13 @@
-
 package elmensajero.gui;
 
 import elmensajero.Message;
-import javafx.geometry.Insets;
+
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -20,8 +21,10 @@ import javafx.scene.text.Font;
  * @author Samuel
  * @see javafx.beans.value.ChangeListener
  */
-public class MessageBox extends StackPane{
    
+    
+public class MessageBox extends AnchorPane{
+    
     /**
     * Construtor da MessageBox
     * Cria variáveis para cores e define o alinhamento do texto na label
@@ -30,20 +33,22 @@ public class MessageBox extends StackPane{
     */
     
     public MessageBox(Message message, boolean sender) {
-        String black = "#FFFFFF";
-        String white = "#000000";
-        this.setAlignment(Pos.BOTTOM_CENTER);
+        String white  = "#FFFFFF";
+        String black  = "#000000";
+        Node guiMessage;
         if(sender){
-            this.setEffect(new DropShadow(3, Color.BLACK));
-            this.setStyle("-fx-background-color: #616161;" + "border-radius: 30px;"+ "-fx-padding: 10;");
-            this.getChildren().add( initMessage(message,black));
+            this.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            guiMessage = initMessage(message,white);
+            guiMessage.setEffect(new DropShadow(3, Color.BLACK));
+            guiMessage.setStyle("-fx-background-color: #616161;" );
+           
             
         }else{
-            this.setEffect(new DropShadow(3, Color.GREY));
-            this.setStyle("-fx-background-color: #E0E0E0;" + "border-radius: 30px;" + "-fx-padding: 10;");
-            this.getChildren().add( initMessage(message,white));
+            guiMessage = initMessage(message,black);
+            guiMessage.setEffect(new DropShadow(3, Color.GAINSBORO));
+            guiMessage.setStyle("-fx-background-color: #E0E0E0;");
         }
-        
+        this.getChildren().add(guiMessage);
     }
     
     /**
@@ -52,13 +57,14 @@ public class MessageBox extends StackPane{
     * Cria a Label e define suas propriedades
     */
 
-    private Label initMessage(Message message,String txtColor){
+    private Node initMessage(Message message,String txtColor){
         Label txt = new Label(message.getMessage());
         txt.setMinSize(100, 30);
         txt.setTextFill(Color.web(txtColor));
         txt.setFont(new Font("Arial",20));
         txt.setWrapText(true);
-        return txt;
+        txt.setAlignment(Pos.CENTER);        
+        return new StackPane(txt);
     }
 
     

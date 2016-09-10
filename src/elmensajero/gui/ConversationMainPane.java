@@ -1,20 +1,17 @@
-
 package elmensajero.gui;
 
+import elmensajero.gui.MessageBox;
 import elmensajero.Message;
+import elmensajero.gui.ConversationMainPaneBottom;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -31,8 +28,8 @@ import javafx.scene.paint.Color;
 public class ConversationMainPane extends BorderPane implements ChangeListener{
     
     private boolean fixScrollFlag;
-    private VBox messages;
     private ScrollPane scroll;
+    private VBox messages;
     
     /**
      * Construtor da classe ConversationMainPane.
@@ -151,10 +148,11 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      */
     
     private ScrollPane initScrollPane(){
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(messages);
+        ScrollPane scrollPane = new ScrollPane( messages );
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
         return scrollPane;
     }
     
@@ -162,12 +160,11 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * Metodo chamado pelo Construtor.
      * Cria um VBox e define suas propriedades
      */
-
     private void initMessages(){      
         messages = new VBox();
         messages.setSpacing(5);
         messages.paddingProperty().set(new Insets(50,20,15,20));
-        messages.setAlignment(Pos.BOTTOM_LEFT);
+//        messages.setAlignment(Pos.BOTTOM_LEFT);
         messages.heightProperty().addListener( this );
     }
     
