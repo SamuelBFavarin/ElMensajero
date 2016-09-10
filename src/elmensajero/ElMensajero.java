@@ -1,7 +1,10 @@
 
 package elmensajero;
 
+import elmansajero.data.DataListener;
+import elmensajero.data.socket.SocketClient;
 import elmensajero.gui.ElMensajeroGUI;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.application.Application;
@@ -14,7 +17,7 @@ import javafx.stage.Stage;
  *
  * @author Vinicius
  */
-public class ElMensajero extends Application {
+public class ElMensajero extends Application implements DataListener{
 
     private Contact userData;
     private final ObservableList<Contact> contacts;
@@ -22,10 +25,13 @@ public class ElMensajero extends Application {
     private ElMensajeroGUI gui;
     private LoginGUI login;
 
+    private final SocketClient socketClient;
+    
     /**
      *
      */
     public ElMensajero() {
+        socketClient = new SocketClient();
         contacts = FXCollections.observableList(new ArrayList<>());
         userData = new Contact(
             "Vinícius",
@@ -35,21 +41,30 @@ public class ElMensajero extends Application {
         );
     }
     
+    @Override
+    public void contactStatusUpdated(Contact c) {
+        final int index = contacts.indexOf(c);
+        Platform.runLater(() -> {
+            contacts.set(index, c);
+        });
+    }
+
+    @Override
+    public void messageReceived(Contact c) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public final void addContact(Contact c){
         Platform.runLater(() -> {
             contacts.add(c);
-            contacts.sort((Contact a, Contact b) -> {
-                return a.getName().compareTo(b.getName());
-            });
+            contacts.sort( Contact.ContactComparator.getInstance() );
         });
     }
     
     public final void addContacts(Contact cs[]){
         Platform.runLater(() -> {
             contacts.addAll(Arrays.asList(cs));
-            contacts.sort((Contact a, Contact b) -> {
-                return a.getName().compareTo(b.getName());
-            });
+            contacts.sort( Contact.ContactComparator.getInstance() );
         });
     }
     
@@ -59,29 +74,39 @@ public class ElMensajero extends Application {
         gui = new ElMensajeroGUI( stage, contacts );
         login = new LoginGUI(stage);
         
-        login.show();
-        login.setLoginListener((String email, String password) -> {
-            if ( email.isEmpty() || password.isEmpty() ){
-                System.out.println("Deveria ser tratado");
-            }
-            System.out.println("Login");
-            System.out.println("E-Mail: "+email);
-            System.out.println("Senha: "+password);
-            
-            gui.show();
-            
+        Platform.runLater(() -> {
+        
+            login.show();
+            login.setLoginListener((String email, String password) -> {
+                Platform.runLater(() -> {
+                    if ( email.isEmpty() || password.isEmpty() ){
+                        System.out.println("Deveria ser tratado");
+                    }
+                    System.out.println("Login");
+                    System.out.println("E-Mail: "+email);
+                    System.out.println("Senha: "+password);
+
+                    gui.show();
+                });
+            });
         });
         
         new Thread(() -> {
             gui.setUserData(userData);
             addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
-            addContact(new Contact("Fulano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
+            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.OFFLINE));
+            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
+            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.OFFLINE));
+            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
+            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.OFFLINE));
+            addContact(new Contact("Fulano", "teste@gmail.com", "you.png", Contact.Status.OFFLINE));
             addContact(new Contact("Sicrano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
-        });
+        }).start();
         
     }
     
     public static void main(String[] args){
         launch(args);
     }
+    
 }

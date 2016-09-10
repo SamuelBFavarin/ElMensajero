@@ -1,6 +1,8 @@
 
 package elmensajero;
 
+import java.util.Comparator;
+
 /**
  *
  * @author Vinicius
@@ -55,6 +57,24 @@ public class Contact {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    
+    public static class ContactComparator implements Comparator<Contact> {
+        private ContactComparator(){}
+        private static ContactComparator instance = null;
+        public static ContactComparator getInstance(){
+            if ( instance == null )
+                instance = new ContactComparator();
+            System.out.println("Come to me baby");
+            return instance;
+        }
+        @Override
+        public int compare(Contact a, Contact b) {
+            if ( a.getStatus() != b.getStatus()  ){
+                return ( a.getStatus() == Contact.Status.ONLINE ? -1:1 );
+            }
+            return a.getName().compareTo(b.getName());
+        }
     }
     
 }
