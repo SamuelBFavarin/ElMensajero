@@ -1,7 +1,8 @@
-
 package elmensajero.gui;
 
+import elmensajero.gui.MessageBox;
 import elmensajero.Message;
+import elmensajero.gui.ConversationMainPaneBottom;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -149,7 +150,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     private ScrollPane initScrollPane(){
         ScrollPane scrollPane = new ScrollPane( messages );
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setEffect(new DropShadow(10, Color.BLACK)); 
+        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
         return scrollPane;
