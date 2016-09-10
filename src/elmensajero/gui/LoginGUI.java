@@ -1,9 +1,10 @@
 
-package elmensajero;
+package elmensajero.gui;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -79,11 +80,15 @@ public class LoginGUI extends StackPane {
             if ( loginListener == null ) return;
             email.setEditable(false);
             password.setEditable(false);
+            loginButton.setDisable(true);
+            cancelButton.setDisable(true);
             
             loginListener.tryLogin( email.getText(), password.getText() );
             
             email.setEditable(true);
             password.setEditable(true);
+            loginButton.setDisable(false);
+            cancelButton.setDisable(false);
         });
         
         this.scene = new Scene(this, WIDTH, HEIGHT);
@@ -96,6 +101,14 @@ public class LoginGUI extends StackPane {
     
     public interface LoginListener {
         public void tryLogin(String email, String password);
+    }
+    
+    public void showError(String message){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Atenção");
+        alert.setHeaderText("O que você fez de errado?");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
     
     /**

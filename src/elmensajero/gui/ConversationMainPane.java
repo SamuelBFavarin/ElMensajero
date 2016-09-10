@@ -1,15 +1,14 @@
 
 package elmensajero.gui;
 
+import elmensajero.Contact;
 import elmensajero.Message;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -26,8 +25,8 @@ import javafx.scene.paint.Color;
  */
 public class ConversationMainPane extends BorderPane implements ChangeListener{
     
+    private final ScrollPane scroll;
     private boolean fixScrollFlag;
-    private ScrollPane scroll;
     private VBox messages;
     
     /**
@@ -49,21 +48,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         scroll = initScrollPane();
         
         this.setCenter(scroll);
-        this.setBottom(new ConversationMainPaneBottom());
-        
-        new Thread(() -> {
-            setMessages(new Message[]{
-                new Message(null, null, "OIIII", null),
-                new Message(null, null, "Gatinho!!!", null),
-            });
-            for (int i = 1; i < 20; i++){
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {}
-                addMessage( new Message(null, null, "teste "+i, null) );
-            }
-        }).start();
-        
+        this.setBottom(new ConversationMainPaneBottom());        
     }
 
     /**
@@ -85,7 +70,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         if ( fixScrollFlag ){
             scroll.setVvalue( 1d );
             fixScrollFlag = false;
-        }            
+        }
     }
     
     /**
@@ -99,10 +84,13 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @see elmensajero.Message
      * 
      * @param message
+     * @param sender
      */
-    public void addMessage(final Message message){
+    public void addMessage(final Message message, final Contact contact){
         
-        final MessageBox box = new MessageBox(message,true);
+        boolean sender = (message.getSender().equals(contact));
+        
+        final MessageBox box = new MessageBox(message,sender);
         Platform.runLater(() -> {
             messages.getChildren().add(box);
             if ( scroll.getVvalue() == 1d ){
@@ -125,14 +113,16 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @see elmensajero.Message
      * 
      * @param message
+     * @param contact
      */
     
-    public void setMessages(final Message[] message){
+    public void setMessages(final Message[] message, final Contact contact){
         
         final MessageBox[] boxes = new MessageBox[message.length];
         
         for(int i = 0; i < message.length; i++){
-            boxes[i] = new MessageBox( message[i], false );
+            boolean sender = ( message[i].getSender().equals(contact) );
+            boxes[i] = new MessageBox( message[i], sender );
         }
         Platform.runLater(() -> {
             messages.getChildren().setAll(boxes);
@@ -166,5 +156,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
 //        messages.setAlignment(Pos.BOTTOM_LEFT);
         messages.heightProperty().addListener( this );
     }
+    
+    
     
 }

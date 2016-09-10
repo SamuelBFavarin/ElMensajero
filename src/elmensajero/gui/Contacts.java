@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 
@@ -92,7 +93,7 @@ class Contacts extends BorderPane{
      * @param userData
      */
     private Node initContactData(Contact userData){
-        ImageView imageView = new ImageView(userData.getImage());
+        ImageView imageView = new ImageView(new Image(userData.getImage(), true));
         imageView.setFitWidth(60);
         imageView.setFitHeight(60);
         
@@ -124,5 +125,6 @@ class Contacts extends BorderPane{
     public void setContactClicked(ContactsListView.ContactClicked listener){
         contactsListView.setContactClicked(listener);
     }
+    
     
 }

@@ -1,17 +1,21 @@
 
 package elmensajero;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  *
  * @author Vinicius
  */
-public class Contact {
+public class Contact implements Serializable {
     private String name, email, image;
     private Status status;
 
     public enum Status { ONLINE, OFFLINE; }
+
+    public Contact() {
+    }
     
     /**
      *
@@ -59,13 +63,22 @@ public class Contact {
         this.status = status;
     }
     
+    /**
+     * Comparacao entre Contatos.
+     * Utiliza o email para comparar se o contato e o mesmo
+     * @param contact
+     * @return igualdade
+     */
+    public boolean equals(Contact contact){
+        return this.getEmail().equals(contact.getEmail());
+    }
+    
     public static class ContactComparator implements Comparator<Contact> {
         private ContactComparator(){}
         private static ContactComparator instance = null;
         public static ContactComparator getInstance(){
             if ( instance == null )
                 instance = new ContactComparator();
-            System.out.println("Come to me baby");
             return instance;
         }
         @Override

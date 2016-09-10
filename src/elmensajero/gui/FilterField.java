@@ -8,6 +8,7 @@ package elmensajero.gui;
 import elmensajero.Contact;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -75,7 +76,9 @@ public class FilterField extends TextField implements EventHandler<KeyEvent>, Li
                 cs.add(c);
             }
         }
-        filteredContacts.setAll(cs);
+        Platform.runLater(() -> {
+            filteredContacts.setAll(cs);
+        });
     }
 
     /**
