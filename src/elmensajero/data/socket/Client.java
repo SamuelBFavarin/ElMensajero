@@ -31,6 +31,10 @@ public class Client implements Runnable, RetrieveDataListener{
     }
     
     public void start(Contact contact){
+        if ( this.thread.getState() == Thread.State.TERMINATED ){
+            this.thread = new Thread(this);
+        }
+        
         this.contact = contact;
         thread.start();
     }

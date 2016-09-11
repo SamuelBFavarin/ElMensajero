@@ -1,4 +1,3 @@
-
 package elmensajero.gui;
 
 import elmensajero.Contact;
@@ -84,7 +83,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @see elmensajero.Message
      * 
      * @param message
-     * @param sender
+     * @param contact
      */
     public void addMessage(final Message message, final Contact contact){
         
@@ -139,7 +138,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     private ScrollPane initScrollPane(){
         ScrollPane scrollPane = new ScrollPane( messages );
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setEffect(new DropShadow(10, Color.BLACK)); 
+        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
         return scrollPane;

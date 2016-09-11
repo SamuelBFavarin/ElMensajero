@@ -6,22 +6,21 @@ import elmensajero.data.DataListener;
 import elmensajero.data.UserDataProperties;
 import elmensajero.data.socket.Client;
 import elmensajero.gui.ElMensajeroGUI;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Properties;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 /**
@@ -54,7 +53,24 @@ public class ElMensajero extends Application {
         }
         @Override
         public void connectionError() {
-            gui.showError("Erro de conexão com o servidor");
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("Erro de conexão");
+                alert.setHeaderText("Erro ao tentar conexão com o servidor");
+                alert.setContentText("Deseja tentar conectar novamente?");
+                alert.setResult(ButtonType.OK);
+                alert.getButtonTypes().setAll( 
+                    new ButtonType( "Cancelar" ),
+                    new ButtonType( "Tentar novamente", ButtonData.OK_DONE )
+                );
+                if ( alert.showAndWait().get().getButtonData() == ButtonData.OK_DONE ){
+                    socketClient.start( UserDataProperties.getUserData() );
+                } else {
+                    Platform.exit();
+                    System.exit(0);
+                }
+            });
         }
         @Override
         public void contactStatusUpdated(Contact contact) {
@@ -124,7 +140,9 @@ public class ElMensajero extends Application {
     }
     
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws FileNotFoundException {
+        
+        stage.getIcons().add(new Image(new FileInputStream("./logo.png")));
         
         gui = new ElMensajeroGUI( stage, contacts, socketClient );
         login = new LoginGUI(stage);

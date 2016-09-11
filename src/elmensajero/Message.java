@@ -37,6 +37,5 @@ public class Message implements Serializable {
         return date;
     }
     
-    
-    
+  
 }
