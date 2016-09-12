@@ -6,8 +6,8 @@ package elmensajero;
  * @author Vinicius
  */
 public class Contact {
-    private String name, email, image;
-    private Status status;
+    protected String name, email, image;
+    protected Status status;
 
     public enum Status { ONLINE, OFFLINE; }
     
@@ -24,6 +24,11 @@ public class Contact {
         this.image = image;
         this.status = status;
     }
+
+    public Contact() {
+    }
+    
+    
 
     public String getEmail() {
         return email;
