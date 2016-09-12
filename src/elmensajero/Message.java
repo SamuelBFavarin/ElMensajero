@@ -1,13 +1,14 @@
 
 package elmensajero;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author Samuel
  */
-public class Message {
+public class Message implements Serializable {
     private final Contact sender;
     private final Contact receptor;
     private final String message;

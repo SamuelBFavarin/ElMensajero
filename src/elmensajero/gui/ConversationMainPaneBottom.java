@@ -1,14 +1,13 @@
 
 package elmensajero.gui;
 
-import elmensajero.ArribaButtonEvent;
-import elmensajero.SendButtonEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
@@ -21,7 +20,11 @@ import javafx.scene.paint.Color;
  * @author Samuel
  * @see javafx.beans.value.ChangeListener
  */
-public class ConversationMainPaneBottom extends HBox {
+public class ConversationMainPaneBottom extends HBox implements EventHandler<MouseEvent> {
+    
+    private SendButtonClickedListener sendButtonClickedListener;
+    
+    private TextArea txtArea;
     
     /**
     * classe ConversationMainPaneBottom.
@@ -33,15 +36,19 @@ public class ConversationMainPaneBottom extends HBox {
     * @see javafx.beans.value.ChangeListener
     */
     public ConversationMainPaneBottom() {
-        TextArea txtArea = initTextArea();
+        sendButtonClickedListener = null;
+        
+        initTextArea();
         Button sendButton = initButton("ENVIAR");
-        sendButton.setOnAction(new SendButtonEvent());
         Button arribaButton = initButton("ARRIBA");
-        arribaButton.setOnAction(new ArribaButtonEvent());
 
+        
+        sendButton.setOnMouseClicked(this);
+        
         this.setMargin(txtArea,new Insets(50,20,15,15));
         this.setMargin(sendButton,new Insets(50,15,0,15));
         this.setMargin(arribaButton,new Insets(50,15,0,0));
+        
         this.getChildren().add(txtArea);
         this.getChildren().add(sendButton);
         this.getChildren().add(arribaButton);
@@ -53,13 +60,11 @@ public class ConversationMainPaneBottom extends HBox {
     * 
     * @see javafx.beans.value.ChangeListener
     */
-    private TextArea initTextArea(){
-        TextArea txtArea = new TextArea();
+    private void initTextArea(){
+        txtArea = new TextArea();
         txtArea.setMaxHeight(125);
         txtArea.setWrapText(true);
-        txtArea.setStyle("-fx-font-size: 15pt;");
-        txtArea.setEffect(new DropShadow(6, Color.BLACK));  
-        return txtArea; 
+        txtArea.setEffect(new DropShadow(6, Color.BLACK));
     }
     
     /**
@@ -79,5 +84,45 @@ public class ConversationMainPaneBottom extends HBox {
         );
         return btn;
     }
-   
+    
+    /**
+     * Define o listener de clique do botao de enviar mensagem.
+     * 
+     * @see elmensajero.gui.ConversationMainPaneBottom.SendButtonClickedListener
+     * 
+     * @param listener
+     */
+    public void setSendButtonClickedListener(SendButtonClickedListener listener){
+        this.sendButtonClickedListener = listener;
+    }
+    
+    /**
+     * Metodo chamado pela intergace grafica de quando o botao de enviar
+     * mensagem for clicado.
+     * 
+     * @see javafx.event.EventHandler
+     * @see elmensajero.gui.ConversationMainPaneBottom.SendButtonClickedListener
+     * 
+     * @param event
+     */
+    @Override
+    public void handle(MouseEvent event) {
+        if ( this.sendButtonClickedListener == null )
+            return;
+        sendButtonClickedListener.sendMessage( txtArea.getText() );
+        txtArea.setText("");
+    }
+    
+    /**
+     * Interface do listener do clique do botao de enviar mensagem da
+     * interface grafica.
+     * 
+     * Deve ser setado pelo metodo setSendButtonClickedListener
+     * 
+     */
+    public interface SendButtonClickedListener {
+        public void sendMessage(String message);
+    }
+    
+    
 }

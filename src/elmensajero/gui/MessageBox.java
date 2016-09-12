@@ -20,9 +20,7 @@ import javafx.scene.text.Font;
  * 
  * @author Samuel
  * @see javafx.beans.value.ChangeListener
- */
-   
-    
+ */ 
 public class MessageBox extends AnchorPane{
     
     /**
@@ -30,19 +28,18 @@ public class MessageBox extends AnchorPane{
     * Cria variáveis para cores e define o alinhamento do texto na label
     * Testa se a mensagem está sendo recebida ou enviada e cria a label
     * 
+     * @param message
+     * @param sender
     */
-    
     public MessageBox(Message message, boolean sender) {
         String white  = "#FFFFFF";
         String black  = "#000000";
         Node guiMessage;
-        if(sender){
+        if( sender ){
             this.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             guiMessage = initMessage(message,white);
             guiMessage.setEffect(new DropShadow(3, Color.BLACK));
             guiMessage.setStyle("-fx-background-color: #616161;" );
-           
-            
         }else{
             guiMessage = initMessage(message,black);
             guiMessage.setEffect(new DropShadow(3, Color.GAINSBORO));

@@ -1,16 +1,13 @@
 package elmensajero.gui;
 
-import elmensajero.gui.MessageBox;
+import elmensajero.Contact;
 import elmensajero.Message;
-import elmensajero.gui.ConversationMainPaneBottom;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -27,9 +24,11 @@ import javafx.scene.paint.Color;
  */
 public class ConversationMainPane extends BorderPane implements ChangeListener{
     
+    private final ConversationMainPaneBottom conversationMainPaneBottom;
+    private final ScrollPane scroll;
+    private final VBox messages;
+    
     private boolean fixScrollFlag;
-    private ScrollPane scroll;
-    private VBox messages;
     
     /**
      * Construtor da classe ConversationMainPane.
@@ -46,25 +45,38 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         fixScrollFlag = false;
         this.setStyle("-fx-background-color: white");
         
-        initMessages();
+        messages = initMessages();
         scroll = initScrollPane();
+        conversationMainPaneBottom = new ConversationMainPaneBottom();
         
         this.setCenter(scroll);
-        this.setBottom(new ConversationMainPaneBottom());
-        
-        new Thread(() -> {
-            setMessages(new Message[]{
-                new Message(null, null, "OIIII", null),
-                new Message(null, null, "Gatinho!!!", null),
-            });
-            for (int i = 1; i < 20; i++){
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {}
-                addMessage( new Message(null, null, "teste "+i, null) );
-            }
-        }).start();
-        
+        this.setBottom( conversationMainPaneBottom );
+    }
+    
+    /**
+     * Metodo chamado pelo Construtor.
+     * Cria o ScrollPane utilizado para a rolagem das mensagens
+     * Coloca a cor de plano de fundo do scroll
+     */    
+    private ScrollPane initScrollPane(){
+        ScrollPane scrollPane = new ScrollPane( messages );
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        return scrollPane;
+    }
+    
+    /**
+     * Metodo chamado pelo Construtor.
+     * Cria um VBox e define suas propriedades
+     */
+    private VBox initMessages(){      
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.paddingProperty().set(new Insets(50,20,15,20));
+        vbox.heightProperty().addListener( this );
+        return vbox;
     }
 
     /**
@@ -86,7 +98,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         if ( fixScrollFlag ){
             scroll.setVvalue( 1d );
             fixScrollFlag = false;
-        }            
+        }
     }
     
     /**
@@ -100,10 +112,13 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @see elmensajero.Message
      * 
      * @param message
+     * @param contact
      */
-    public void addMessage(final Message message){
+    public void addMessage(final Message message, final Contact contact){
         
-        final MessageBox box = new MessageBox(message,true);
+        boolean sender = (message.getSender().equals(contact));
+        
+        final MessageBox box = new MessageBox(message,sender);
         Platform.runLater(() -> {
             messages.getChildren().add(box);
             if ( scroll.getVvalue() == 1d ){
@@ -126,46 +141,31 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @see elmensajero.Message
      * 
      * @param message
+     * @param contact
      */
-    
-    public void setMessages(final Message[] message){
+    public void setMessages(final Message[] message, final Contact contact){
         
         final MessageBox[] boxes = new MessageBox[message.length];
         
         for(int i = 0; i < message.length; i++){
-            boxes[i] = new MessageBox( message[i], false );
+            boolean sender = ( message[i].getSender().equals(contact) );
+            boxes[i] = new MessageBox( message[i], sender );
         }
         Platform.runLater(() -> {
             messages.getChildren().setAll(boxes);
             fixScrollFlag = true;
         });
-    } 
-    
-     /**
-     * Metodo chamado pelo Construtor.
-     * Cria o ScrollPane utilizado para a rolagem das mensagens
-     * Coloca a cor de plano de fundo do sroll
-     */
-    
-    private ScrollPane initScrollPane(){
-        ScrollPane scrollPane = new ScrollPane( messages );
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
-        return scrollPane;
     }
     
-     /**
-     * Metodo chamado pelo Construtor.
-     * Cria um VBox e define suas propriedades
+    /**
+     * Define o listener de clique do botao de enviar mensagem.
+     * 
+     * @see elmensajero.gui.ConversationMainPaneBottom.SendButtonClickedListener
+     * 
+     * @param listener
      */
-    private void initMessages(){      
-        messages = new VBox();
-        messages.setSpacing(5);
-        messages.paddingProperty().set(new Insets(50,20,15,20));
-//        messages.setAlignment(Pos.BOTTOM_LEFT);
-        messages.heightProperty().addListener( this );
+    public void setSendButtonClickedListener(ConversationMainPaneBottom.SendButtonClickedListener listener){
+        conversationMainPaneBottom.setSendButtonClickedListener(listener);
     }
     
 }

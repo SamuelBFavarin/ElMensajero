@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>src/elmensajero/data/socket/ServerOutput.java</url>
+            <bookmark id="1">
+                <name/>
+                <line>10</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Rafael/Documents/GitHub/ElMensajero/src/elmensajero/gui/MessageBox.java</file>
-            <file>file:/C:/Users/Rafael/Documents/GitHub/ElMensajero/src/elmensajero/gui/ConversationMainPane.java</file>
-            <file>file:/C:/Users/Rafael/Documents/GitHub/ElMensajero/src/elmensajero/gui/Conversation.java</file>
-            <file>file:/C:/Users/Rafael/Documents/GitHub/ElMensajero/src/elmensajero/gui/ConversationLeftPane.java</file>
-            <file>file:/C:/Users/Rafael/Documents/GitHub/ElMensajero/src/elmensajero/gui/ConversationMainPaneBottom.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Client.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/ElMensajero.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/SocketData.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Server.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/UserDataProperties.java</file>
         </group>
     </open-files>
 </project-private>
