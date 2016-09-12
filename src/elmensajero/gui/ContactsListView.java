@@ -79,7 +79,7 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
                 setText(null);
                 setGraphic(null);
                 return;
-            };
+            }
             setText(contact.getName());
             rect.setFill( (contact.getStatus()==Contact.Status.ONLINE) ? onlineColor : offlineColor );
             setGraphic(rect);

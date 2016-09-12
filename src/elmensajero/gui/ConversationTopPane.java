@@ -1,24 +1,20 @@
 
 package elmensajero.gui;
 
+import elmensajero.Contact;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  *
@@ -28,82 +24,116 @@ import javafx.scene.text.Font;
  */
 public class ConversationTopPane extends StackPane {
  
- private String imgURL = "http://sizlingpeople.com/wp-content/uploads/2016/05/Megan-Fox-Instagram.jpg";
- private String frindName= "Megan Fox";
+    private final ImageView friendImage;
+    private final Label friendName;
 
- /**
- * Construtor da classe ConversationTopPane
- * Define o designer da tela, com cor e espaçamento dos elementos
- * Chama as funções da classe
- * 
- */
+    /**
+     * Construtor da classe ConversationTopPane
+     * Define o layout da tela, com cor e espaçamento dos elementos
+     * Chama os metodos necessarios da inteface grafica da classe
+     * 
+     */
     public ConversationTopPane() {
-        Label friendName = initFriendName();
-        ImageView friendImage = initFriendImage();
-        ImageView logoImage = initLogoImage();
+        friendName = initFriendName();
+        friendImage = initFriendImage();
+        
+        StackPane logoImage = new StackPane(initLogoImage());
+        StackPane friendNamePane = new StackPane(friendName);
+        StackPane friendImagePane = new StackPane(friendImage);
+        
         this.maxHeight(100);
         this.setStyle("-fx-background-color: #212121");
-        this.getChildren().add(friendImage);  
-        this.getChildren().add(friendName);    
+        
+        friendImagePane.setPadding(new Insets(5,5,5,5));
+        logoImage.setPadding(new Insets(0,5,0,0));
+        
+        friendNamePane.setAlignment(Pos.CENTER_LEFT);
+        friendImagePane.setAlignment(Pos.BASELINE_CENTER);
+        logoImage.setAlignment(Pos.CENTER_RIGHT);
+        
+        this.getChildren().add(friendImagePane);
+        this.getChildren().add(friendNamePane);
         this.getChildren().add(logoImage);
-        this.setMargin(friendName,new Insets(10,1,2,100));
-        this.setMargin(friendImage,new Insets(10,1,5,10));
-        this.setMargin(logoImage,new Insets(10,20,5,10));
-        this.setAlignment(Pos.CENTER_LEFT);
-        this.setAlignment(logoImage, Pos.CENTER_RIGHT);
+        
+        //this.setMargin(friendName,new Insets(10,1,2,100));
+        //this.setMargin(friendImage,new Insets(10,1,5,10));
+        //this.setMargin(logoImage,new Insets(10,20,5,10));
+        
+        //this.setAlignment(Pos.CENTER_LEFT);
+        //this.setAlignment(logoImage, Pos.CENTER_RIGHT);
+        //friendName.setAlignment(Pos.CENTER);
     }
     
- /**
- * Método da classe ConversationLeftPane
- * Gera uma Label para mostrar o nome na tela
- * Define o designer da Label, alterando 
- * cor, sombra, tamanho e fonte
- */
+    /**
+     * Método da classe ConversationLeftPane
+     * Gera uma Label para mostrar o nome na tela
+     * Define o designer da Label, alterando 
+     * cor, sombra, tamanho e fonte
+     */
     private Label initFriendName(){
-        Label txtName = new Label(frindName);
+        Label txtName = new Label();
         txtName.setTextFill(Color.web("#FFFFFF"));
-        txtName.setFont(new Font("Arial",17));
-        txtName.setEffect(new DropShadow(3, Color.WHITE));  
+        txtName.setFont(Font.font("Trebuchet MS", 18));
+        txtName.setEffect(new DropShadow(1, Color.WHITE));
+        txtName.setPadding(new Insets(0,0,0,10));
         return txtName;
     }
  
- /**
- * Método da classe ConversationTopPane
- * Gera uma ImageView (Imagem) do usuário
- * Define as propriedade da Imagem
- * Define sombra
- */
+    /**
+     * Método da classe ConversationTopPane
+     * Gera uma ImageView (Imagem) do usuário
+     * Define as propriedade da Imagem
+     * Define sombra
+     */
     private ImageView initFriendImage(){
-        Image imgAvatar = new Image(imgURL);
-        ImageView avatar = new ImageView(imgAvatar);
-        avatar.setFitWidth(70);
-        avatar.setPreserveRatio(true);
-        avatar.setSmooth(true);
+        ImageView avatar = new ImageView();
+        avatar.setFitHeight(70);
+//        avatar.setPreserveRatio(true);
+//        avatar.setSmooth(true);
         avatar.setCache(true);
         avatar.setEffect(new DropShadow(15, Color.BLACK));
         return avatar;
     }
    
     /**
-    * Método da classe ConversationTopPane
-    * Gera uma ImageView (Imagem) da logo
-    * Define as propriedade da Imagem
-    * Define sombra
-    */
-    
+     * Método da classe ConversationTopPane
+     * Gera uma ImageView (Imagem) da logo
+     * Define as propriedade da Imagem
+     * Define sombra
+     */
     private ImageView initLogoImage() {
         ImageView logo = null;
         try {
-            logo = new ImageView(new Image(new FileInputStream("./logo.png")));
-            logo.setFitWidth(70);
-            logo.setPreserveRatio(true);
-            logo.setSmooth(true);
-            logo.setCache(true);
+            Image logoImage = new Image(
+                new FileInputStream("./logo.png"),
+                70,70, // width X height
+                true, true // preserveRatio // smooth
+            );
+            logo = new ImageView(logoImage);
+            logo.setFitHeight(70);
             logo.setEffect(new DropShadow(15, Color.BLACK));
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         }
         return logo;
     }
-   
+    
+    /**
+     * Define os componentes da interface grafica para o contato
+     * recebido por parametro.
+     * 
+     * @param contact
+     */
+    public void setContact(Contact contact){
+        Platform.runLater(() -> {
+            friendName.setText( contact.getName() );
+            try {
+                friendImage.setImage( new Image(contact.getImage(), true) );
+            } catch ( Exception e) {
+                e.printStackTrace();
+                friendImage.setImage(null);
+            }
+        });
+    }
+    
 }

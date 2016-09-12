@@ -1,89 +1,164 @@
 
 package elmensajero;
 
+import elmensajero.gui.LoginGUI;
+import elmensajero.data.DataListener;
+import elmensajero.data.UserDataProperties;
+import elmensajero.data.socket.Client;
 import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  *
  * @author Vinicius
  */
 public class ElMensajero extends Application {
-
-    private Contact userData;
+    
     private final ObservableList<Contact> contacts;
     
     private ElMensajeroGUI gui;
     private LoginGUI login;
 
+    private final Client socketClient;
+    
     /**
      *
      */
     public ElMensajero() {
+        socketClient = new Client(new SocketDataListener());
         contacts = FXCollections.observableList(new ArrayList<>());
-        userData = new Contact(
-            "Vinícius",
-            "vinicius@rudinei.cnt.br",
-            "https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-frc1/v/t1.0-9/10959463_759249350825529_7123328862024803112_n.jpg?oh=8d0fe4f644fd3ee33deafd3840049e62&oe=5846BB67&__gda__=1480345353_1e4d5e27b1e477383421a05b5bffa27c",
-            Contact.Status.ONLINE
-        );
+    }
+    
+    public class SocketDataListener implements DataListener{
+        @Override
+        public void connected() {
+            new Thread(() -> {
+                setContacts( socketClient.getAllContacts() );
+            }, "Searching for all contacts").start();
+        }
+        @Override
+        public void connectionError() {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.initStyle(StageStyle.UTILITY);
+                alert.setTitle("Erro de conexão");
+                alert.setHeaderText("Erro ao tentar conexão com o servidor");
+                alert.setContentText("Deseja tentar conectar novamente?");
+                alert.setResult(ButtonType.OK);
+                alert.getButtonTypes().setAll( 
+                    new ButtonType( "Cancelar" ),
+                    new ButtonType( "Tentar novamente", ButtonData.OK_DONE )
+                );
+                if ( alert.showAndWait().get().getButtonData() == ButtonData.OK_DONE ){
+                    socketClient.start( UserDataProperties.getUserData() );
+                } else {
+                    Platform.exit();
+                    System.exit(0);
+                }
+            });
+        }
+        @Override
+        public void contactStatusUpdated(Contact contact) {
+            addContact(contact);
+        }
+        @Override
+        public void messageReceived(Message m) {
+            new Thread(() -> {
+                gui.addMessage(m);
+            }, "Adding received message").start();
+        }
+        
     }
     
     public final void addContact(Contact c){
-        Platform.runLater(() -> {
-            contacts.add(c);
-            contacts.sort((Contact a, Contact b) -> {
-                return a.getName().compareTo(b.getName());
-            });
-        });
+        if ( c != null ){
+            new Thread(() -> {
+                for (int i = 0; i < contacts.size(); i++) {
+                    if ( contacts.get(i).equals( c ) ){
+                        contacts.remove(i);
+                        break;
+                    }
+                }
+                contacts.add(c);
+                contacts.sort( Contact.ContactComparator.getInstance() );
+            },"Adding contact to list").start();
+        }
     }
     
-    public final void addContacts(Contact cs[]){
-        Platform.runLater(() -> {
-            contacts.addAll(Arrays.asList(cs));
-            contacts.sort((Contact a, Contact b) -> {
-                return a.getName().compareTo(b.getName());
-            });
-        });
+    public final void setContacts(Contact cs[]){
+        if ( cs != null ){
+            new Thread(() -> {
+                contacts.setAll(Arrays.asList(cs));
+                contacts.sort( Contact.ContactComparator.getInstance() );
+            }, "Setting all contact list").start();
+        }
+    }
+    
+    private void startGUI(Contact user){
+        gui.setUserData( user );            
+        gui.show();
+        socketClient.start( user );
+    }
+    
+    private class LoginGUIListener implements LoginGUI.LoginListener{
+
+        @Override
+        public void tryLogin(String email, String password) {
+            if ( email.isEmpty() || password.isEmpty() ){
+                login.showError("Preencha todos os campos");
+                return;
+            }
+            Contact user = new Contact(email, email, email, Contact.Status.ONLINE);
+            UserDataProperties.setUserData( user );
+            startGUI(user);
+        }
+        
     }
     
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws FileNotFoundException {
         
-        gui = new ElMensajeroGUI( stage, contacts );
+        stage.getIcons().add(new Image(new FileInputStream("./logo.png")));
+        
+        gui = new ElMensajeroGUI( stage, contacts, socketClient );
         login = new LoginGUI(stage);
-        
-        login.show();
-        login.setLoginListener((String email, String password) -> {
-            if ( email.isEmpty() || password.isEmpty() ){
-                System.out.println("Deveria ser tratado");
-            }
-            System.out.println("Login");
-            System.out.println("E-Mail: "+email);
-            System.out.println("Senha: "+password);
-            
-            gui.show();
-            
-        });
+        login.setLoginListener(new LoginGUIListener());
         
         new Thread(() -> {
-            gui.setUserData(userData);
-            addContact(new Contact("Teste", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
-            addContact(new Contact("Fulano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
-            addContact(new Contact("Sicrano", "teste@gmail.com", "you.png", Contact.Status.ONLINE));
-        });
+            Contact user =  UserDataProperties.getUserData();
+            if ( user == null ){
+                login.show();
+            } else {
+                startGUI(user);
+            }
+            
+        }, "Beginning Thread").start();
         
+        stage.setOnCloseRequest((WindowEvent t) -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
     
     public static void main(String[] args){
-        DatabaseTest test = new DatabaseTest();
+        new DatabaseTest();
         launch(args);
     }
+    
 }
