@@ -5,6 +5,7 @@ import elmensajero.gui.LoginGUI;
 import elmensajero.data.DataListener;
 import elmensajero.data.UserDataProperties;
 import elmensajero.data.socket.Client;
+import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -156,6 +157,7 @@ public class ElMensajero extends Application {
     }
     
     public static void main(String[] args){
+        new DatabaseTest();
         launch(args);
     }
     

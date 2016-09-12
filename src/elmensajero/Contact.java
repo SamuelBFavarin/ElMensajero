@@ -9,8 +9,8 @@ import java.util.Comparator;
  * @author Vinicius
  */
 public class Contact implements Serializable {
-    private String name, email, image;
-    private Status status;
+    protected String name, email, image;
+    protected Status status;
 
     public enum Status { ONLINE, OFFLINE; }
 
@@ -30,7 +30,7 @@ public class Contact implements Serializable {
         this.image = image;
         this.status = status;
     }
-
+    
     public String getEmail() {
         return email;
     }
