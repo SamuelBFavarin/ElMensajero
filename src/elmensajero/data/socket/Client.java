@@ -6,6 +6,11 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +21,6 @@ import java.util.logging.Logger;
  */
 public class Client implements Runnable, RetrieveDataListener{
     
-    private static final String HOST = "127.0.0.1";
-    private static final int    PORT = 3043;
     private Thread thread;
     private Socket socket;
     
@@ -42,7 +45,7 @@ public class Client implements Runnable, RetrieveDataListener{
     public void run(){
         socket = null;
         try {
-            socket = new Socket(HOST, PORT);
+            socket = new Socket(SocketData.HOST, SocketData.PORT);
             SocketData.writeByte(socket, SocketData.ConnectionType.LISTENER);
             SocketData.writeObject(socket, this.contact);
             startServerListener();
@@ -91,7 +94,7 @@ public class Client implements Runnable, RetrieveDataListener{
     }
     
     private Object makeRequest(byte request, Object data) throws Exception {
-        Socket requestSocket = new Socket(HOST, PORT);
+        Socket requestSocket = new Socket(SocketData.HOST, SocketData.PORT);
         SocketData.writeByte(requestSocket, SocketData.ConnectionType.REQUEST);
         SocketData.writeByte(requestSocket, request);
         SocketData.writeObject(requestSocket, data);
@@ -126,4 +129,39 @@ public class Client implements Runnable, RetrieveDataListener{
         }
         return null;
     }
+    
+    public String sendFile(File file){
+        try {
+            Socket requestSocket = new Socket(SocketData.HOST, SocketData.PORT);
+            SocketData.writeByte(requestSocket, SocketData.ConnectionType.REQUEST);
+            SocketData.writeByte(requestSocket, RetrieveDataListener.SEND_FILE);
+            
+            InputStream in = new BufferedInputStream(new FileInputStream(file));
+            OutputStream out = requestSocket.getOutputStream();
+            
+            SocketData.writeObject(requestSocket, file.getName());
+
+            if ( SocketData.nextByte(requestSocket) != SocketData.READY_TO_RECEIVE ){
+                return null;
+            }
+            
+            long total = file.getTotalSpace();
+            long atual = 0;
+            int aByte;
+            do{
+                aByte = in.read();
+                out.write(aByte);
+                System.out.println( (atual++) + " de " + total );
+            } while ( aByte != -1 );
+            
+            if ( SocketData.nextByte(requestSocket) != SocketData.READY_TO_RECEIVE ){
+                return null;
+            }
+            return (String) SocketData.readObject(requestSocket);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 }

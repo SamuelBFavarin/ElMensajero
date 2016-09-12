@@ -1,4 +1,3 @@
-
 package elmensajero.data.socket;
 
 import elmensajero.Contact;
@@ -6,6 +5,10 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashSet;
@@ -48,6 +51,10 @@ public class ServerRequest {
                 
             case RetrieveDataListener.SEND_MESSAGE:
                 returnP = sendMessage((Message) parameter);
+                break;
+            
+            case RetrieveDataListener.SEND_FILE:
+                returnP = receiveFile((String) parameter);
                 break;
                 
             default:
@@ -102,6 +109,28 @@ public class ServerRequest {
         
         blockedClients.remove(friend);
         return RetrieveDataListener.MESSAGE_SENT;
+    }
+    
+    private Object receiveFile(String filename) throws Exception {
+            System.out.println("Receiving file");
+            InputStream in = client.getInputStream();
+            
+            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+            OutputStream out = new BufferedOutputStream(new FileOutputStream(filename));
+            int aByte;
+            do{
+                aByte = in.read();
+                if ( aByte != -1 ){
+                    out.write(aByte);
+                }
+            } while ( aByte != -1 );
+            
+            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+            
+            out.close();
+            
+            SocketData.writeObject( client, filename );
+        return false;
     }
     
 }

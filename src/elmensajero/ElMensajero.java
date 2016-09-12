@@ -7,6 +7,7 @@ import elmensajero.data.UserDataProperties;
 import elmensajero.data.socket.Client;
 import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -128,6 +129,25 @@ public class ElMensajero extends Application {
             UserDataProperties.setUserData( user );
             startGUI(user);
         }
+
+        @Override
+        public void tryRegister(String name, String email, String password, File imageFile) {
+            if ( name.isEmpty() || email.isEmpty() || password.isEmpty() || imageFile == null ){
+                login.showError("Preencha todos os campos");
+                return;
+            }
+            if ( !imageFile.exists() ){
+                login.showError("Algo ocorreu errado na imagem");
+                return;
+            }
+            System.out.println("Enviando imagem");
+            String image = socketClient.sendFile(imageFile);
+            if ( image == null ){
+                login.showError("Erro ao enviar imagem");
+                return;
+            }
+            System.out.println("Imagem enviada");
+        }
         
     }
     
@@ -157,7 +177,6 @@ public class ElMensajero extends Application {
     }
     
     public static void main(String[] args){
-        new DatabaseTest();
         launch(args);
     }
     
