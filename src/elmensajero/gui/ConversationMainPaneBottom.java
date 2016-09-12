@@ -45,9 +45,9 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         
         sendButton.setOnMouseClicked(this);
         
-        this.setMargin(txtArea,new Insets(50,20,15,15));
-        this.setMargin(sendButton,new Insets(50,15,0,15));
-        this.setMargin(arribaButton,new Insets(50,15,0,0));
+        ConversationMainPaneBottom.setMargin(txtArea,new Insets(50,20,15,15));
+        ConversationMainPaneBottom.setMargin(sendButton,new Insets(50,15,0,15));
+        ConversationMainPaneBottom.setMargin(arribaButton,new Insets(50,15,0,0));
         
         this.getChildren().add(txtArea);
         this.getChildren().add(sendButton);

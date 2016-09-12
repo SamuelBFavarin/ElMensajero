@@ -20,12 +20,11 @@ import javafx.collections.ObservableMap;
  */
 public class Server extends ServerSocket {
     
-    private static final int PORT = 3043;
     private final ObservableMap<Contact,Socket> clients;
     private final Set<Socket> blockedClients;
     
     public Server() throws IOException {
-        super(PORT);
+        super(SocketData.PORT);
         blockedClients = new HashSet<>();
         clients = FXCollections.observableHashMap();
         clients.addListener(new ClientsChangeListener(clients, blockedClients));
@@ -59,7 +58,7 @@ public class Server extends ServerSocket {
     }
     
     public void start(){
-        System.out.println( "Servidor iniciado na porta "+PORT );
+        System.out.println( "Servidor iniciado na porta " + SocketData.PORT );
         (new AliveClientsService(clients, blockedClients)).start();
         while (true){
             try {
