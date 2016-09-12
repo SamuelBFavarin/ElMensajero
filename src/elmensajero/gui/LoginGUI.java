@@ -16,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -105,6 +106,7 @@ public class LoginGUI extends StackPane {
     
     public void showError(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Atenção");
         alert.setHeaderText("O que você fez de errado?");
         alert.setContentText(message);

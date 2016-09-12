@@ -49,7 +49,7 @@ public class ElMensajero extends Application {
         public void connected() {
             new Thread(() -> {
                 setContacts( socketClient.getAllContacts() );
-            }).start();
+            }, "Searching for all contacts").start();
         }
         @Override
         public void connectionError() {
@@ -74,51 +74,46 @@ public class ElMensajero extends Application {
         }
         @Override
         public void contactStatusUpdated(Contact contact) {
-            new Thread(() -> {
-                int index = -1;
-                for (int i = 0; i < contacts.size(); i++) {
-                    if ( contacts.get(i).equals( contact ) ){
-                        index = i;
-                        break;
-                    }
-                }
-                if ( index == -1 ){
-                    addContact(contact);
-                } else {
-                    contacts.set(index, contact);
-                }
-            }).start();
+            addContact(contact);
         }
         @Override
         public void messageReceived(Message m) {
             new Thread(() -> {
                 gui.addMessage(m);
-            }).start();
+            }, "Adding received message").start();
         }
         
     }
     
     public final void addContact(Contact c){
-        new Thread(() -> {
-            for (int i = 0; i < contacts.size(); i++) {
-                if ( contacts.get(i).equals( c ) ){
-                    contacts.remove(i);
-                    break;
+        if ( c != null ){
+            new Thread(() -> {
+                for (int i = 0; i < contacts.size(); i++) {
+                    if ( contacts.get(i).equals( c ) ){
+                        contacts.remove(i);
+                        break;
+                    }
                 }
-            }
-            contacts.add(c);
-            contacts.sort( Contact.ContactComparator.getInstance() );
-        }).start();
+                contacts.add(c);
+                contacts.sort( Contact.ContactComparator.getInstance() );
+            },"Adding contact to list").start();
+        }
     }
     
     public final void setContacts(Contact cs[]){
-        new Thread(() -> {
-            contacts.setAll(Arrays.asList(cs));
-            contacts.sort( Contact.ContactComparator.getInstance() );
-        }).start();
+        if ( cs != null ){
+            new Thread(() -> {
+                contacts.setAll(Arrays.asList(cs));
+                contacts.sort( Contact.ContactComparator.getInstance() );
+            }, "Setting all contact list").start();
+        }
     }
     
-    
+    private void startGUI(Contact user){
+        gui.setUserData( user );            
+        gui.show();
+        socketClient.start( user );
+    }
     
     private class LoginGUIListener implements LoginGUI.LoginListener{
 
@@ -128,13 +123,9 @@ public class ElMensajero extends Application {
                 login.showError("Preencha todos os campos");
                 return;
             }
-            Contact user = new Contact(email, "Vinicius", "https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-frc1/v/t1.0-9/10959463_759249350825529_7123328862024803112_n.jpg?oh=8d0fe4f644fd3ee33deafd3840049e62&oe=5846BB67&__gda__=1480345353_1e4d5e27b1e477383421a05b5bffa27c", Contact.Status.ONLINE);
+            Contact user = new Contact(email, email, email, Contact.Status.ONLINE);
             UserDataProperties.setUserData( user );
-            gui.setUserData( user );
-            
-            gui.show();
-            
-            socketClient.start( user );
+            startGUI(user);
         }
         
     }
@@ -153,13 +144,10 @@ public class ElMensajero extends Application {
             if ( user == null ){
                 login.show();
             } else {
-                gui.show();
-                gui.setUserData( user );
-
-                socketClient.start( user );
+                startGUI(user);
             }
             
-        }).start();
+        }, "Beginning Thread").start();
         
         stage.setOnCloseRequest((WindowEvent t) -> {
             Platform.exit();

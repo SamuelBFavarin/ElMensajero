@@ -24,9 +24,11 @@ import javafx.scene.paint.Color;
  */
 public class ConversationMainPane extends BorderPane implements ChangeListener{
     
+    private final ConversationMainPaneBottom conversationMainPaneBottom;
     private final ScrollPane scroll;
+    private final VBox messages;
+    
     private boolean fixScrollFlag;
-    private VBox messages;
     
     /**
      * Construtor da classe ConversationMainPane.
@@ -43,11 +45,38 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         fixScrollFlag = false;
         this.setStyle("-fx-background-color: white");
         
-        initMessages();
+        messages = initMessages();
         scroll = initScrollPane();
+        conversationMainPaneBottom = new ConversationMainPaneBottom();
         
         this.setCenter(scroll);
-        this.setBottom(new ConversationMainPaneBottom());        
+        this.setBottom( conversationMainPaneBottom );
+    }
+    
+    /**
+     * Metodo chamado pelo Construtor.
+     * Cria o ScrollPane utilizado para a rolagem das mensagens
+     * Coloca a cor de plano de fundo do scroll
+     */    
+    private ScrollPane initScrollPane(){
+        ScrollPane scrollPane = new ScrollPane( messages );
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        return scrollPane;
+    }
+    
+    /**
+     * Metodo chamado pelo Construtor.
+     * Cria um VBox e define suas propriedades
+     */
+    private VBox initMessages(){      
+        VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.paddingProperty().set(new Insets(50,20,15,20));
+        vbox.heightProperty().addListener( this );
+        return vbox;
     }
 
     /**
@@ -114,7 +143,6 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      * @param message
      * @param contact
      */
-    
     public void setMessages(final Message[] message, final Contact contact){
         
         final MessageBox[] boxes = new MessageBox[message.length];
@@ -127,35 +155,17 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
             messages.getChildren().setAll(boxes);
             fixScrollFlag = true;
         });
-    } 
-    
-     /**
-     * Metodo chamado pelo Construtor.
-     * Cria o ScrollPane utilizado para a rolagem das mensagens
-     * Coloca a cor de plano de fundo do sroll
-     */
-    
-    private ScrollPane initScrollPane(){
-        ScrollPane scrollPane = new ScrollPane( messages );
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setEffect(new DropShadow(1, Color.BLACK)); 
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
-        return scrollPane;
     }
     
-     /**
-     * Metodo chamado pelo Construtor.
-     * Cria um VBox e define suas propriedades
+    /**
+     * Define o listener de clique do botao de enviar mensagem.
+     * 
+     * @see elmensajero.gui.ConversationMainPaneBottom.SendButtonClickedListener
+     * 
+     * @param listener
      */
-    private void initMessages(){      
-        messages = new VBox();
-        messages.setSpacing(5);
-        messages.paddingProperty().set(new Insets(50,20,15,20));
-//        messages.setAlignment(Pos.BOTTOM_LEFT);
-        messages.heightProperty().addListener( this );
+    public void setSendButtonClickedListener(ConversationMainPaneBottom.SendButtonClickedListener listener){
+        conversationMainPaneBottom.setSendButtonClickedListener(listener);
     }
-    
-    
     
 }

@@ -1,9 +1,11 @@
 
 package elmensajero.gui;
 
+import static com.sun.corba.se.impl.util.Utility.printStackTrace;
 import elmensajero.Contact;
 import elmensajero.Message;
 import elmensajero.data.RetrieveDataListener;
+import java.util.Calendar;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -74,13 +76,41 @@ public class ElMensajeroGUI extends BorderPane {
      */
     private void setListeners(){
         contactsBox.setContactClicked((Contact c) -> {
-            new Thread(() -> {
-                contact = c;
-                conversation.setContact(contact);
-                Message[] messages = retrieveDataListener.getAllMessages(userData, contact);
-                conversation.setMessages( messages, contact );
-            }).start();
+            loadConversation(c);
         });
+        conversation.setSendButtonClickedListener((String message) -> {
+            System.out.println("Enviando mensagem:"
+                    + "\nuser: "+userData.getName()
+                    + "\ncontact"+contact.getName());
+            Message m = new Message(
+                userData,
+                contact,
+                message,
+                Calendar.getInstance().getTime()
+            );
+            new Thread(() -> {
+                if ( retrieveDataListener.sendMessage(m) ){
+                    addMessage(m);
+                } else {
+                    showError("Falha ao enviar mensagem: "+m.getMessage());
+                }
+            }, "Send Message").start();
+        });
+        
+    }
+    
+    /**
+     * Carrega a conversa com o usuario enviado por parametro.
+     * 
+     * @param c
+     */
+    private void loadConversation(Contact c){
+        this.contact = c;
+        new Thread(() -> {
+            conversation.setContact(c);
+            Message[] messages = retrieveDataListener.getAllMessages(userData, c);
+            setMessages(messages);
+        }, "Load conversation").start();
     }
     
     /**
@@ -104,12 +134,14 @@ public class ElMensajeroGUI extends BorderPane {
      * @param message
      */
     public void showError(String message){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Atenção");
-        alert.setHeaderText("Algo ocorreu errado");
-        alert.setContentText(message);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("Algo ocorreu errado");
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
     
     /**
@@ -135,10 +167,11 @@ public class ElMensajeroGUI extends BorderPane {
      * @param message
      */
     public void addMessage(Message message){
-        if ( message.getSender() == contact || message.getReceptor() == contact ){
-            conversation.addMessage( message, this.contact );
+        if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
+            conversation.addMessage( message, this.userData );
         } else {
-            System.out.println("Should set to not viewed messages on the list");
+            System.out.println("Deveria adicionar na lista em mensagens não lidas");
+            printStackTrace();
         }
     }
     
@@ -149,7 +182,7 @@ public class ElMensajeroGUI extends BorderPane {
      * @param messages
      */
     public void setMessages(Message[] messages){
-        conversation.setMessages( messages, this.contact );
+        conversation.setMessages( messages, this.userData );
     }
     
     /**
@@ -158,7 +191,7 @@ public class ElMensajeroGUI extends BorderPane {
      * @param contact
      */
     public void setContact(Contact contact){
-        this.contact = contact;
+        loadConversation(contact);
     }
     
 }

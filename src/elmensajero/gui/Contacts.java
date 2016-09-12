@@ -57,8 +57,7 @@ class Contacts extends BorderPane{
         
         this.setTop( filterField );
         this.setCenter( contactsListView );
-        this.setPadding(new Insets(2,2,2,2));
-        
+        this.setPadding(new Insets(2,2,2,2));        
 
         this.setPrefWidth(200);
         this.setMaxWidth(300);
@@ -93,7 +92,11 @@ class Contacts extends BorderPane{
      * @param userData
      */
     private Node initContactData(Contact userData){
-        ImageView imageView = new ImageView(new Image(userData.getImage(), true));
+        Image image = null;
+        try {
+            image = new Image(userData.getImage(), true);
+        } catch (Exception e){}
+        ImageView imageView = new ImageView( image );
         imageView.setFitWidth(60);
         imageView.setFitHeight(60);
         

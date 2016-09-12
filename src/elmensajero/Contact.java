@@ -70,6 +70,10 @@ public class Contact implements Serializable {
      * @return igualdade
      */
     public boolean equals(Contact contact){
+        if ( contact == null )
+            return false;
+        if ( this == contact )
+            return true;
         return this.getEmail().equals(contact.getEmail());
     }
     

@@ -34,7 +34,6 @@ public class Client implements Runnable, RetrieveDataListener{
         if ( this.thread.getState() == Thread.State.TERMINATED ){
             this.thread = new Thread(this);
         }
-        
         this.contact = contact;
         thread.start();
     }
@@ -64,18 +63,26 @@ public class Client implements Runnable, RetrieveDataListener{
             while ( true ){
                 nextByte = SocketData.nextByte(socket);
                 switch ( nextByte ){
+                    
+                case SocketData.IS_ALIVE:
+                    SocketData.writeByte(socket, SocketData.IS_ALIVE);
+                    break;
+                    
                 case DataListener.CONTACT_STATUS_UPDATED:
                     Contact c = (Contact) SocketData.readObject(socket);
                     dataListener.contactStatusUpdated(c);
                     System.out.println("Contato atualizado");
                     break;
+                    
                 case DataListener.MESSAGE_RECEIVED:
                     Message m = (Message) SocketData.readObject(socket);
                     dataListener.messageReceived(m);
                     System.out.println("Mensagem recebida");
                     break;
+                    
                 default:
                     System.out.println("Byte não identificado");
+                    throw new Exception();
                 }
             }
         } catch ( Exception e ){
@@ -114,7 +121,7 @@ public class Client implements Runnable, RetrieveDataListener{
     @Override
     public Contact[] getAllContacts(){
         try {
-            return (Contact[]) makeRequest(RetrieveDataListener.ALL_CONTACTS, null);
+            return (Contact[]) makeRequest(RetrieveDataListener.ALL_CONTACTS, this.contact);
         } catch (Exception e){
         }
         return null;

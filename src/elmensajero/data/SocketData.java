@@ -20,8 +20,22 @@ public class SocketData {
     }
     
     public static final byte READY_TO_RECEIVE = 0x03;
+    public static final byte IS_ALIVE         = 0x04;
     
-    
+    public static boolean testConnection(Socket client){
+        try {
+            client.setSoTimeout(1000);
+            writeByte(client, SocketData.IS_ALIVE);
+            byte nextByte = nextByte(client);
+            client.setSoTimeout(0);
+            return ( nextByte == SocketData.IS_ALIVE );
+        } catch (Exception e){
+            try{
+                client.close();
+            } catch ( Exception ex ){ }
+            return false;
+        }
+    }
     
     public static void writeObject(Socket socket, Object data) throws Exception{
         ObjectOutputStream oos = new ObjectOutputStream( socket.getOutputStream() );

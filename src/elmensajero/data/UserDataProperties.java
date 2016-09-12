@@ -34,17 +34,11 @@ public class UserDataProperties extends Properties {
             file.setProperty("name", c.getName());
             file.setProperty("email", c.getEmail());
             file.setProperty("image", c.getImage());
-            file.store(new BufferedOutputStream(new FileOutputStream(USERDATA_FILE)), "UserData");
+            //file.store(new BufferedOutputStream(new FileOutputStream(USERDATA_FILE)), "UserData");
         } catch (Exception e){
         }
     }
     public static Contact getUserData(){
-        return new Contact(
-            "Vinícius",
-            "vinicius@rudinei.cnt.br",
-            "https://fbcdn-sphotos-g-a.akamaihd.net/hphotos-ak-frc1/v/t1.0-9/10959463_759249350825529_7123328862024803112_n.jpg?oh=8d0fe4f644fd3ee33deafd3840049e62&oe=5846BB67&__gda__=1480345353_1e4d5e27b1e477383421a05b5bffa27c",
-            Contact.Status.ONLINE
-        );/*
         Contact c = new Contact();
         try {
             Properties file = getInstance();
@@ -55,7 +49,7 @@ public class UserDataProperties extends Properties {
         } catch (Exception e){
             return null;
         }
-        return c;*/
+        return c;
     }
     
 }

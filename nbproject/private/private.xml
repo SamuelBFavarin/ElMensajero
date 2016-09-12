@@ -14,8 +14,9 @@
         <group>
             <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Client.java</file>
             <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/ElMensajero.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/SocketData.java</file>
             <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Server.java</file>
-            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/Contact.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/UserDataProperties.java</file>
         </group>
     </open-files>
 </project-private>

@@ -42,6 +42,17 @@ class Conversation extends BorderPane  {
     }
     
     /**
+     * Define o listener de clique do botao de enviar mensagem.
+     * 
+     * @see elmensajero.gui.ConversationMainPaneBottom.SendButtonClickedListener
+     * 
+     * @param listener
+     */
+    public void setSendButtonClickedListener(ConversationMainPaneBottom.SendButtonClickedListener listener){
+        conversationMainPane.setSendButtonClickedListener( listener );
+    }
+    
+    /**
      * Adiciona uma mensagem na interface grafica.
      * Chama a classe inferior "dona" dessa parte
      * da interface grafica
