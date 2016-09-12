@@ -15,11 +15,9 @@ public class DatabaseConnection {
 
     public Connection getConnection(){
         Connection connection = null;
-       
-        
         try{
             connection = DriverManager.getConnection("jdbc:mysql://localhost","root", "");
-
+            return connection;
         }catch(SQLException e){
             System.err.println(e);
         }
