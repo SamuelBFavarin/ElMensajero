@@ -26,7 +26,6 @@ public class DatabaseSearchMessage {
             stmt.setString(2, c2.getEmail());
             stmt.setString(3, c1.getEmail());
             stmt.setString(4, c2.getEmail());
-         
             ResultSet res = stmt.executeQuery();   
             res.last();
             Message[] m = new Message[res.getRow()];

@@ -95,7 +95,12 @@ class Contacts extends BorderPane{
     private Node initContactData(Contact userData){
         Image image = null;
         try {
-            image = new Image("http://"+SocketData.HOST+":"+SocketData.HTTP_PORT+"/"+userData.getImage(), true);
+            image = new Image(
+                "http://"+SocketData.HOST+":"+SocketData.HTTP_PORT+"/"+userData.getImage(),
+                60,60,
+                false,false,
+                true
+            );
         } catch (Exception e){}
         ImageView imageView = new ImageView( image );
         imageView.setFitWidth(60);
