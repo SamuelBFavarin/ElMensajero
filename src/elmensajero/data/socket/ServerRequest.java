@@ -5,6 +5,7 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactsDB;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.FileOutputStream;
@@ -60,9 +61,13 @@ public class ServerRequest {
                 break;
             
             case RetrieveDataListener.NEW_USER:
-                returnP = newUser((Contact) parameter);
+                returnP = newUser((ContactsDB) parameter);
                 break;
-                
+            
+            case RetrieveDataListener.LOGIN:
+                returnP = login((ContactsDB) parameter);
+                break;
+            
             default:
                 System.err.println("Operação não identificada");
         }
@@ -143,7 +148,12 @@ public class ServerRequest {
         return false;
     }
     
-    private Object newUser(Contact contact){
+    private Object newUser(ContactsDB contact){
+        
+        return 0;
+    }
+    
+    private Object login(ContactsDB contact){
         
         return true;
     }

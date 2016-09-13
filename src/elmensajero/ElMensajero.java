@@ -4,6 +4,7 @@ package elmensajero;
 import elmensajero.gui.LoginGUI;
 import elmensajero.data.DataListener;
 import elmensajero.data.UserDataProperties;
+import elmensajero.data.base.ContactsDB;
 import elmensajero.data.socket.Client;
 import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
@@ -147,6 +148,20 @@ public class ElMensajero extends Application {
                 return;
             }
             System.out.println("Imagem enviada");
+            int res = socketClient.newUser(new ContactsDB(name, email, image));
+            switch ( res ){
+                case 1:
+                    startGUI(new Contact(
+                        name, email, image,
+                        Contact.Status.ONLINE
+                    ));
+                    break;
+                case -1:
+                    login.showError("E-Mail já está em uso");
+                    break;
+                default:
+                    login.showError("Erro no cadastro");
+            }
         }
         
     }

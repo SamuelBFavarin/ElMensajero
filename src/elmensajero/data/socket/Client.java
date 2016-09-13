@@ -6,6 +6,7 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactsDB;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -164,6 +165,24 @@ public class Client implements Runnable, RetrieveDataListener{
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public int newUser(ContactsDB contact){
+        try {
+            return (int) makeRequest(RetrieveDataListener.NEW_USER, contact);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public boolean login(ContactsDB contact){
+        try {
+            return (boolean) makeRequest(RetrieveDataListener.NEW_USER, contact);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
     
 }
