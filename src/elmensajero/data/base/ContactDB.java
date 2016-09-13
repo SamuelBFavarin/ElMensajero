@@ -7,13 +7,14 @@ import elmensajero.Contact;
  *
  * @author Samuel
  */
-public class ContactsDB extends Contact{
+public class ContactDB extends Contact{
     private String password;
     
-    public ContactsDB( String name, String email, String senha) {
+    public ContactDB( String name, String email, String password, String image) {
         this.password = password;
         super.name = name;
         super.email = email;
+        super.image = image;
     }
 
     public String getPassword() {

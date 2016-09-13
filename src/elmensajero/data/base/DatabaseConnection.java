@@ -9,17 +9,17 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Rafael
+ * @author Samuel
  */
 public class DatabaseConnection {
 
-    public Connection getConnection(){
-        Connection connection = null;
-       
-        
+    private static Connection connection = null;
+    public static Connection getConnection(){
+        if(connection == null)
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost","root", "");
-
+           
+                connection = DriverManager.getConnection("jdbc:mysql://localhost/elmensajero","root", "");
+         
         }catch(SQLException e){
             System.err.println(e);
         }

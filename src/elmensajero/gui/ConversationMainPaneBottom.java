@@ -1,4 +1,4 @@
-
+﻿
 package elmensajero.gui;
 
 import javafx.event.EventHandler;
@@ -9,6 +9,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
@@ -45,9 +47,13 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         
         sendButton.setOnMouseClicked(this);
         
-        ConversationMainPaneBottom.setMargin(txtArea,new Insets(50,20,15,15));
-        ConversationMainPaneBottom.setMargin(sendButton,new Insets(50,15,0,15));
-        ConversationMainPaneBottom.setMargin(arribaButton,new Insets(50,15,0,0));
+
+        HBox.setHgrow(txtArea, Priority.ALWAYS);
+        
+        HBox.setMargin(txtArea,new Insets(50,20,15,15));
+        HBox.setMargin(sendButton,new Insets(50,15,0,15));
+        HBox.setMargin(arribaButton,new Insets(50,15,0,0));
+
         
         this.getChildren().add(txtArea);
         this.getChildren().add(sendButton);

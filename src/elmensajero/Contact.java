@@ -31,6 +31,7 @@ public class Contact implements Serializable {
         this.status = status;
     }
     
+    
     public String getEmail() {
         return email;
     }
