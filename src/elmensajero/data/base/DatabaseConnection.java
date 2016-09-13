@@ -4,8 +4,6 @@ package elmensajero.data.base;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,7 +16,7 @@ public class DatabaseConnection {
         if(connection == null)
         try{
            
-                connection = DriverManager.getConnection("jdbc:mysql://localhost/elmensajero","root", "");
+                connection = DriverManager.getConnection("jdbc:mysql://localhost/elmensajero", "root", "Vd23031996");
          
         }catch(SQLException e){
             System.err.println(e);
