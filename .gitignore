@@ -6,3 +6,9 @@ nbdist/
 .nb-gradle/
 nbproject/private/private.properties
 userdata.properties
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG

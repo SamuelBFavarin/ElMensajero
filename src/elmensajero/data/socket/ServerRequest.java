@@ -6,10 +6,12 @@ import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,6 +57,10 @@ public class ServerRequest {
             
             case RetrieveDataListener.SEND_FILE:
                 returnP = receiveFile((String) parameter);
+                break;
+            
+            case RetrieveDataListener.NEW_USER:
+                returnP = newUser((Contact) parameter);
                 break;
                 
             default:
@@ -112,25 +118,34 @@ public class ServerRequest {
     }
     
     private Object receiveFile(String filename) throws Exception {
-            System.out.println("Receiving file");
-            InputStream in = client.getInputStream();
-            
-            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(filename));
-            int aByte;
-            do{
-                aByte = in.read();
-                if ( aByte != -1 ){
-                    out.write(aByte);
-                }
-            } while ( aByte != -1 );
-            
-            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-            
-            out.close();
-            
-            SocketData.writeObject( client, filename );
+        
+        String ext = filename.substring( filename.lastIndexOf('.') );
+        filename = "./img/" + System.currentTimeMillis() + ext;
+
+        System.out.println("Receiving file");
+        DataInputStream in = new DataInputStream( client.getInputStream() );
+
+        SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+        OutputStream out = new BufferedOutputStream(new FileOutputStream(filename));
+        int aByte;
+        do{
+            aByte = in.readInt();
+            if ( aByte != -1 ){
+                out.write(aByte);
+            }
+        } while ( aByte != -1 );
+        System.out.println("Finished");
+        SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+
+        out.close();
+
+        SocketData.writeObject( client, filename );
         return false;
+    }
+    
+    private Object newUser(Contact contact){
+        
+        return true;
     }
     
 }

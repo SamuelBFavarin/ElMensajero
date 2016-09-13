@@ -7,6 +7,7 @@ import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -137,7 +138,7 @@ public class Client implements Runnable, RetrieveDataListener{
             SocketData.writeByte(requestSocket, RetrieveDataListener.SEND_FILE);
             
             InputStream in = new BufferedInputStream(new FileInputStream(file));
-            OutputStream out = requestSocket.getOutputStream();
+            DataOutputStream out = new DataOutputStream( requestSocket.getOutputStream() );
             
             SocketData.writeObject(requestSocket, file.getName());
 
@@ -145,14 +146,15 @@ public class Client implements Runnable, RetrieveDataListener{
                 return null;
             }
             
-            long total = file.getTotalSpace();
+            long total = file.length();
             long atual = 0;
             int aByte;
             do{
                 aByte = in.read();
-                out.write(aByte);
-                System.out.println( (atual++) + " de " + total );
+                out.writeInt(aByte);
             } while ( aByte != -1 );
+            
+            in.close();
             
             if ( SocketData.nextByte(requestSocket) != SocketData.READY_TO_RECEIVE ){
                 return null;
