@@ -59,12 +59,14 @@ public class LoginGUI extends StackPane {
     }
     
     public void showError(String message){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.initStyle(StageStyle.UTILITY);
-        alert.setTitle("Atenção");
-        alert.setHeaderText("O que você fez de errado?");
-        alert.setContentText(message);
-        alert.showAndWait();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Atenção");
+            alert.setHeaderText("O que você fez de errado?");
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
     
     /**
