@@ -6,14 +6,17 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactDB;
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  *
@@ -130,14 +133,14 @@ public class Client implements Runnable, RetrieveDataListener{
         return null;
     }
     
-    public String sendFile(File file){
+    public String sendFile(File file, final ProgressIndicator progress){
         try {
             Socket requestSocket = new Socket(SocketData.HOST, SocketData.PORT);
             SocketData.writeByte(requestSocket, SocketData.ConnectionType.REQUEST);
             SocketData.writeByte(requestSocket, RetrieveDataListener.SEND_FILE);
             
             InputStream in = new BufferedInputStream(new FileInputStream(file));
-            OutputStream out = requestSocket.getOutputStream();
+            DataOutputStream out = new DataOutputStream( requestSocket.getOutputStream() );
             
             SocketData.writeObject(requestSocket, file.getName());
 
@@ -145,20 +148,43 @@ public class Client implements Runnable, RetrieveDataListener{
                 return null;
             }
             
-            long total = file.getTotalSpace();
-            long atual = 0;
+            double total = file.length();
+            double atual = 0;
             int aByte;
             do{
                 aByte = in.read();
-                out.write(aByte);
-                System.out.println( (atual++) + " de " + total );
+                out.writeInt(aByte);
+                final double step = atual++;
+                Platform.runLater(() -> {
+                    progress.setProgress(step/total);
+                });
             } while ( aByte != -1 );
+            
+            in.close();
             
             if ( SocketData.nextByte(requestSocket) != SocketData.READY_TO_RECEIVE ){
                 return null;
             }
             return (String) SocketData.readObject(requestSocket);
         } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public int newUser(ContactDB contact){
+        try {
+            return (int) makeRequest(RetrieveDataListener.NEW_USER, contact);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public ContactDB login(ContactDB contact){
+        try {
+            return (ContactDB) makeRequest(RetrieveDataListener.LOGIN, contact);
+        } catch(Exception e){
             e.printStackTrace();
         }
         return null;

@@ -16,14 +16,12 @@ import java.util.logging.Logger;
  */
 public class AliveClientsService implements Runnable {
 
-    private final Map<Contact,Socket> clients;
-    private final Set<Socket> blockedClients;
+    private final ServerClients clients;
 
     private Thread thread;
     
-    public AliveClientsService(Map<Contact, Socket> clients, Set<Socket> blockedClients) {
+    public AliveClientsService(ServerClients clients) {
         this.clients = clients;
-        this.blockedClients = blockedClients;
         thread = new Thread(this, "Alive clients service");
     }
 
@@ -35,23 +33,23 @@ public class AliveClientsService implements Runnable {
     }
     
     private void testClient(Contact contact){
-        Socket client = clients.get(contact);
-        if ( blockedClients.contains( client ) )
+        Socket client = clients.getClients().get(contact);
+        if ( clients.getBlockedClients().contains( client ) )
             return;
-        blockedClients.add(client);
+        clients.getBlockedClients().add(client);
         
         if (!SocketData.testConnection(client)){
             
             System.out.println("Contato sem resposta removido: "+contact.getName());
-            clients.remove(contact);
+            clients.removeContact(contact);
             
         }
         
-        blockedClients.remove(client);
+        clients.getBlockedClients().remove(client);
     }
     
     private void testClients(){
-        Set<Contact> contacts = new HashSet<>(clients.keySet());
+        Set<Contact> contacts = new HashSet<>(clients.getClients().keySet());
         for ( Contact c : contacts ) {
             testClient(c);
         }

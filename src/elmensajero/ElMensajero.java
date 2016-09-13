@@ -1,11 +1,10 @@
-
 package elmensajero;
 
 import elmensajero.gui.LoginGUI;
 import elmensajero.data.DataListener;
 import elmensajero.data.UserDataProperties;
+import elmensajero.data.base.ContactDB;
 import elmensajero.data.socket.Client;
-import elmensajero.data.base.DatabaseTest;
 import elmensajero.gui.ElMensajeroGUI;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +12,8 @@ import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -114,7 +116,7 @@ public class ElMensajero extends Application {
     private void startGUI(Contact user){
         gui.setUserData( user );            
         gui.show();
-        //socketClient.start( user );
+        socketClient.start( user );
     }
     
     private class LoginGUIListener implements LoginGUI.LoginListener{
@@ -125,13 +127,24 @@ public class ElMensajero extends Application {
                 login.showError("Preencha todos os campos");
                 return;
             }
-            Contact user = new Contact(email, email, email, Contact.Status.ONLINE);
-            UserDataProperties.setUserData( user );
-            startGUI(user);
+            try {
+                password = UserDataProperties.encode(password);
+                ContactDB user = socketClient.login(new ContactDB(null, email, password, null));
+                if ( user == null ){
+                    login.showError("Usuário e/ou senha incorreto(s)");
+                    return;
+                }
+                UserDataProperties.setUserData( user );
+                startGUI(user);
+
+            } catch (Exception ex) {
+                Logger.getLogger(ElMensajero.class.getName()).log(Level.SEVERE, null, ex);
+                login.showError("Algo deu errado");
+            }
         }
 
         @Override
-        public void tryRegister(String name, String email, String password, File imageFile) {
+        public void tryRegister(String name, String email, String password, File imageFile, ProgressIndicator progress) {
             if ( name.isEmpty() || email.isEmpty() || password.isEmpty() || imageFile == null ){
                 login.showError("Preencha todos os campos");
                 return;
@@ -141,19 +154,39 @@ public class ElMensajero extends Application {
                 return;
             }
             System.out.println("Enviando imagem");
-            String image = socketClient.sendFile(imageFile);
+            String image = socketClient.sendFile(imageFile, progress);
             if ( image == null ){
                 login.showError("Erro ao enviar imagem");
                 return;
             }
+            try {
             System.out.println("Imagem enviada");
+                password = UserDataProperties.encode(password);
+                ContactDB user = new ContactDB(name, email, password, image);
+                int res = socketClient.newUser(user);
+                switch ( res ){
+                    case 1:
+                        UserDataProperties.setUserData(user);
+                        startGUI(new Contact(
+                            name, email, image,
+                            Contact.Status.ONLINE
+                        ));
+                        break;
+                    case -1:
+                        login.showError("E-Mail já está em uso");
+                        break;
+                    default:
+                        login.showError("Erro no cadastro");
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(ElMensajero.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }
     
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
-        
+    public void start(Stage stage) throws FileNotFoundException, Exception {
         stage.getIcons().add(new Image(new FileInputStream("./logo.png")));
         
         gui = new ElMensajeroGUI( stage, contacts, socketClient );
@@ -161,16 +194,18 @@ public class ElMensajero extends Application {
         login.setLoginListener(new LoginGUIListener());
         
         new Thread(() -> {
-            Contact user =  UserDataProperties.getUserData();
+            ContactDB user = UserDataProperties.getUserData();
+            if ( user != null ){
+                user = socketClient.login(user);
+            }
             if ( user == null ){
                 login.show();
             } else {
                 startGUI(user);
             }
             
-        }, "Beginning Thread");//.start();
+        }, "Beginning Thread").start();
         
-        startGUI(new Contact());
         stage.setOnCloseRequest((WindowEvent t) -> {
             Platform.exit();
             System.exit(0);
@@ -179,6 +214,7 @@ public class ElMensajero extends Application {
     
     public static void main(String[] args){
         launch(args);
+        
     }
     
 }

@@ -2,6 +2,7 @@
 package elmensajero.gui;
 
 import elmensajero.Contact;
+import elmensajero.data.SocketData;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.application.Platform;
@@ -119,7 +120,7 @@ public class ConversationTopPane extends StackPane {
         Platform.runLater(() -> {
             friendName.setText( contact.getName() );
             try {
-                friendImage.setImage( new Image(contact.getImage(), true) );
+                friendImage.setImage( new Image("http://"+SocketData.HOST+":"+SocketData.HTTP_PORT+"/"+contact.getImage(), true) );
             } catch ( Exception e) {
                 e.printStackTrace();
                 friendImage.setImage(null);

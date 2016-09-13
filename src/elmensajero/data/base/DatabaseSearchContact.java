@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class DatabaseSearchContact {
     
-    public Contact searchContact(String email, Connection connection) throws SQLException{
+    public ContactDB searchContact(String email, Connection connection) throws SQLException{
         try {
             PreparedStatement stmt = connection.prepareStatement(
                     "SELECT * FROM users WHERE email = ?"

@@ -4,6 +4,7 @@ import java.io.File;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -54,7 +55,7 @@ public class LoginGUI extends StackPane {
     
     public interface LoginListener {
         public void tryLogin(String email, String password);
-        public void tryRegister(String name,String email,String password,File image );
+        public void tryRegister(String name,String email,String password,File image, ProgressIndicator progress );
     }
     
     public void showError(String message){

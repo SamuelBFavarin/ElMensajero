@@ -5,13 +5,13 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactDB;
+import elmensajero.data.base.Database;
 import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,13 +21,11 @@ import java.util.Set;
  */
 public class ServerRequest {
 
-    private final Map<Contact,Socket> clients;
-    private final Set<Socket> blockedClients;
+    private final ServerClients clients;
     private final Socket client;
 
-    public ServerRequest(Map<Contact,Socket> clients, Set<Socket> blockedClients, Socket client) {
+    public ServerRequest(ServerClients clients, Socket client) {
         this.clients = clients;
-        this.blockedClients = blockedClients;
         this.client = client;
     }
     
@@ -56,7 +54,17 @@ public class ServerRequest {
             case RetrieveDataListener.SEND_FILE:
                 returnP = receiveFile((String) parameter);
                 break;
-                
+            
+            case RetrieveDataListener.NEW_USER:
+                System.out.println("Novo usuario");
+                returnP = newUser((ContactDB) parameter);
+                break;
+            
+            case RetrieveDataListener.LOGIN:
+                System.out.println("Login");
+                returnP = login((ContactDB) parameter);
+                break;
+            
             default:
                 System.err.println("Operação não identificada");
         }
@@ -64,36 +72,35 @@ public class ServerRequest {
         client.close();
     }
     
-    private Object getAllContacts(Contact c) throws Exception {
-        Set<Contact> contSet = new HashSet<>( clients.keySet() );
-        for ( Contact co : contSet ){
-            if ( co.equals(c) ){
-                contSet.remove(co);
-                break;
+    private Object getAllContacts(Contact contact) throws Exception {
+        Contact[] contacts = Database.searchAllContact(contact);
+        for ( Contact c : contacts ){
+            if ( clients.getClients().keySet().contains(c) ){
+                c.setStatus(Contact.Status.ONLINE);
+                continue;
+            }
+            for ( Contact co : clients.getClients().keySet() ){
+                if ( co.equals(c) ){
+                    c.setStatus(Contact.Status.ONLINE);
+                    break;
+                }
             }
         }
-        Contact[] contacts = new Contact[contSet.size()];
-        contSet.toArray(contacts);
         return contacts;
     }
     
     private Object getAllMessages(Contact[] contacts) throws Exception{
         Contact a = contacts[0];
         Contact b = contacts[1];
-        return new Message[]{
-            new Message(a, b, "Teste 1", new Date()),
-            new Message(b, a, "Teste 2", new Date()),
-            new Message(a, b, "Teste 3", new Date()),
-            new Message(b, a, "Teste 4", new Date())
-        };
+        return Database.searchMessage(a, b);
     }
     
     private Object sendMessage(Message message) throws Exception {
-        Socket friend = clients.get(message.getReceptor());
+        Socket friend = clients.getClients().get(message.getReceptor());
         if ( friend == null ){
-            for ( Contact co : clients.keySet() ){
+            for ( Contact co : clients.getClients().keySet() ){
                 if ( co.equals(message.getReceptor()) ){
-                    friend = clients.get(co);
+                    friend = clients.getClients().get(co);
                     break;
                 }
             }
@@ -101,36 +108,48 @@ public class ServerRequest {
                 return RetrieveDataListener.SEND_MESSAGE_ERROR;
             }
         }
-        while ( blockedClients.contains(friend) ){}
-        blockedClients.add(friend);
+        while ( clients.getBlockedClients().contains(friend) ){}
+        clients.getBlockedClients().add(friend);
         
         SocketData.writeByte(friend, DataListener.MESSAGE_RECEIVED);
         SocketData.writeObject(friend, message);
         
-        blockedClients.remove(friend);
+        clients.getBlockedClients().remove(friend);
         return RetrieveDataListener.MESSAGE_SENT;
     }
     
     private Object receiveFile(String filename) throws Exception {
-            System.out.println("Receiving file");
-            InputStream in = client.getInputStream();
-            
-            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-            OutputStream out = new BufferedOutputStream(new FileOutputStream(filename));
-            int aByte;
-            do{
-                aByte = in.read();
-                if ( aByte != -1 ){
-                    out.write(aByte);
-                }
-            } while ( aByte != -1 );
-            
-            SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-            
-            out.close();
-            
-            SocketData.writeObject( client, filename );
+        
+        String ext = filename.substring( filename.lastIndexOf('.') );
+        filename = System.currentTimeMillis() + ext;
+
+        System.out.println("Receiving file");
+        DataInputStream in = new DataInputStream( client.getInputStream() );
+
+        SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+        OutputStream out = new BufferedOutputStream(new FileOutputStream("./img/" + filename));
+        int aByte;
+        do{
+            aByte = in.readInt();
+            if ( aByte != -1 ){
+                out.write(aByte);
+            }
+        } while ( aByte != -1 );
+        System.out.println("Finished");
+        SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
+
+        out.close();
+
+        SocketData.writeObject( client, filename );
         return false;
+    }
+    
+    private Object newUser(ContactDB contact){
+        return Database.addContact(contact);
+    }
+    
+    private Object login(ContactDB contact){
+        return Database.login(contact.getEmail(), contact.getPassword());
     }
     
 }
