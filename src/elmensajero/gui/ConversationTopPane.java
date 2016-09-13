@@ -14,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 /**
  *
@@ -54,14 +53,6 @@ public class ConversationTopPane extends StackPane {
         this.getChildren().add(friendImagePane);
         this.getChildren().add(friendNamePane);
         this.getChildren().add(logoImage);
-        
-        //this.setMargin(friendName,new Insets(10,1,2,100));
-        //this.setMargin(friendImage,new Insets(10,1,5,10));
-        //this.setMargin(logoImage,new Insets(10,20,5,10));
-        
-        //this.setAlignment(Pos.CENTER_LEFT);
-        //this.setAlignment(logoImage, Pos.CENTER_RIGHT);
-        //friendName.setAlignment(Pos.CENTER);
     }
     
     /**
