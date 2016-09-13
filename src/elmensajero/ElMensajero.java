@@ -115,7 +115,7 @@ public class ElMensajero extends Application {
     private void startGUI(Contact user){
         gui.setUserData( user );            
         gui.show();
-        socketClient.start( user );
+        //socketClient.start( user );
     }
     
     private class LoginGUIListener implements LoginGUI.LoginListener{
@@ -183,8 +183,9 @@ public class ElMensajero extends Application {
                 startGUI(user);
             }
             
-        }, "Beginning Thread").start();
+        }, "Beginning Thread");//.start();
         
+        startGUI(new Contact());
         stage.setOnCloseRequest((WindowEvent t) -> {
             Platform.exit();
             System.exit(0);
