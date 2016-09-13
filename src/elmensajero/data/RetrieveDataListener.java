@@ -17,6 +17,8 @@ public interface RetrieveDataListener {
     
     public static final byte ALL_CONTACTS = 0x05;
     
+    public static final byte SEND_FILE    = 0x06;
+    
     public Message[] getAllMessages(Contact a, Contact b);
     
     public boolean sendMessage(Message m);

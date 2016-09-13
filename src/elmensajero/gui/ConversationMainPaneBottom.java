@@ -1,4 +1,4 @@
-
+﻿
 package elmensajero.gui;
 
 import javafx.event.EventHandler;
@@ -47,11 +47,13 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         
         sendButton.setOnMouseClicked(this);
         
+
         HBox.setHgrow(txtArea, Priority.ALWAYS);
         
         HBox.setMargin(txtArea,new Insets(50,20,15,15));
         HBox.setMargin(sendButton,new Insets(50,15,0,15));
         HBox.setMargin(arribaButton,new Insets(50,15,0,0));
+
         
         this.getChildren().add(txtArea);
         this.getChildren().add(sendButton);

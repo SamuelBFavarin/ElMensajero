@@ -13,6 +13,9 @@ import java.net.Socket;
 public class SocketData {
     private SocketData() {}
     
+    public static final String HOST = "127.0.0.1";
+    public static final int    PORT = 3043;
+    
     public static class ConnectionType{
         private ConnectionType() {}
         public static final byte LISTENER = 0x01;
