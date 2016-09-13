@@ -66,6 +66,7 @@ public class ServerClients {
             }
             blockedClients.remove(client);
         }
+        clients.remove(contact);
     }
     
 }
