@@ -1,6 +1,7 @@
 
 package elmensajero;
 
+import elmensajero.data.SocketData;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -23,6 +24,7 @@ public class Contact implements Serializable {
      * @param name
      * @param email
      * @param image
+     * @param status
      */
     public Contact(String name, String email, String image, Status status) {
         this.name = name;
@@ -52,7 +54,7 @@ public class Contact implements Serializable {
         this.email = email;
     }
 
-    public void setImage(String image) {
+    public void setImage(String image){
         this.image = image;
     }
 

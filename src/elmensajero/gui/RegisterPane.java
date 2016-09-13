@@ -5,21 +5,25 @@ import elmensajero.components.CustomTextField;
 import elmensajero.validators.EmailValidator;
 import elmensajero.validators.SimpleValidator;
 import java.io.File;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -98,13 +102,6 @@ public class RegisterPane extends GridPane {
         return title;
     }
 
-    private TextField initField(boolean password) {
-        if (password) {
-            return new PasswordField();
-        }
-        return new TextField();
-    }
-
     private Node initButtons() {
         HBox buttons = new HBox(5);
         buttons.setAlignment(Pos.CENTER_RIGHT);
@@ -118,7 +115,7 @@ public class RegisterPane extends GridPane {
         buttons.getChildren().add(register);
 
         cancel.setOnMouseClicked(cancelListener());
-        register.setOnMouseClicked(registerButtonListener(register, cancel));
+        register.setOnMouseClicked(registerButtonListener());
         return buttons;
     }
 
@@ -132,9 +129,7 @@ public class RegisterPane extends GridPane {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Escolha uma imagem");
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("PNG", "*.png"),
-                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-                new FileChooser.ExtensionFilter("JPEG", "*.jpeg")
+            new FileChooser.ExtensionFilter("Imagens", "*.png;*.jpg;*.jpeg")
         );
         return chooser.showOpenDialog(stage);
     }
@@ -145,7 +140,7 @@ public class RegisterPane extends GridPane {
         };
     }
 
-    private EventHandler<MouseEvent> registerButtonListener(Button loginButton, Button cancelButton) {
+    private EventHandler<MouseEvent> registerButtonListener() {
         return (MouseEvent event) -> {
             if (loginListener == null) {
                 return;
@@ -156,19 +151,23 @@ public class RegisterPane extends GridPane {
                 return;
             }
 
-            name.setEditable(false);
-            email.setEditable(false);
-            password.setEditable(false);
-            loginButton.setDisable(true);
-            cancelButton.setDisable(true);
-
-            loginListener.tryRegister(name.getText(), email.getText(), password.getText(), imageFile);
-
-            name.setEditable(true);
-            email.setEditable(true);
-            password.setEditable(true);
-            loginButton.setDisable(false);
-            cancelButton.setDisable(false);
+            ProgressIndicator progress = new ProgressIndicator(0);
+            Alert alert = new Alert(Alert.AlertType.NONE);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setHeaderText("Enviando imagem");
+            alert.setContentText("Aguarde um momento");
+            alert.setGraphic(progress);
+            alert.show();
+            new Thread(() -> {
+                
+                loginListener.tryRegister(name.getText(), email.getText(), password.getText(), imageFile, progress);
+                
+                Platform.runLater(() -> {
+                    alert.getButtonTypes().setAll(ButtonType.OK);
+                    alert.close();
+                });
+                
+            }).start();
         };
     }
 

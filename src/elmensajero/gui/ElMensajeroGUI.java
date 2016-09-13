@@ -1,7 +1,6 @@
 
 package elmensajero.gui;
 
-import static com.sun.corba.se.impl.util.Utility.printStackTrace;
 import elmensajero.Contact;
 import elmensajero.Message;
 import elmensajero.data.RetrieveDataListener;
@@ -171,7 +170,6 @@ public class ElMensajeroGUI extends BorderPane {
             conversation.addMessage( message, this.userData );
         } else {
             System.out.println("Deveria adicionar na lista em mensagens não lidas");
-            printStackTrace();
         }
     }
     

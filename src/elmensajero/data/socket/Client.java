@@ -6,16 +6,17 @@ import elmensajero.Message;
 import elmensajero.data.DataListener;
 import elmensajero.data.RetrieveDataListener;
 import elmensajero.data.SocketData;
-import elmensajero.data.base.ContactsDB;
+import elmensajero.data.base.ContactDB;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.ProgressIndicator;
 
 /**
  *
@@ -132,7 +133,7 @@ public class Client implements Runnable, RetrieveDataListener{
         return null;
     }
     
-    public String sendFile(File file){
+    public String sendFile(File file, final ProgressIndicator progress){
         try {
             Socket requestSocket = new Socket(SocketData.HOST, SocketData.PORT);
             SocketData.writeByte(requestSocket, SocketData.ConnectionType.REQUEST);
@@ -147,12 +148,16 @@ public class Client implements Runnable, RetrieveDataListener{
                 return null;
             }
             
-            long total = file.length();
-            long atual = 0;
+            double total = file.length();
+            double atual = 0;
             int aByte;
             do{
                 aByte = in.read();
                 out.writeInt(aByte);
+                final double step = atual++;
+                Platform.runLater(() -> {
+                    progress.setProgress(step/total);
+                });
             } while ( aByte != -1 );
             
             in.close();
@@ -167,7 +172,7 @@ public class Client implements Runnable, RetrieveDataListener{
         return null;
     }
     
-    public int newUser(ContactsDB contact){
+    public int newUser(ContactDB contact){
         try {
             return (int) makeRequest(RetrieveDataListener.NEW_USER, contact);
         } catch(Exception e){
@@ -176,13 +181,13 @@ public class Client implements Runnable, RetrieveDataListener{
         return 0;
     }
     
-    public boolean login(ContactsDB contact){
+    public ContactDB login(ContactDB contact){
         try {
-            return (boolean) makeRequest(RetrieveDataListener.NEW_USER, contact);
+            return (ContactDB) makeRequest(RetrieveDataListener.LOGIN, contact);
         } catch(Exception e){
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
     
 }

@@ -1,4 +1,3 @@
-
 package elmensajero.data.socket;
 
 import elmensajero.Contact;
@@ -7,12 +6,12 @@ import elmensajero.data.SocketData;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 
 /**
  *
@@ -20,21 +19,18 @@ import javafx.collections.ObservableMap;
  */
 public class Server extends ServerSocket {
     
-    private final ObservableMap<Contact,Socket> clients;
-    private final Set<Socket> blockedClients;
+    private final ServerClients clients;
     
     public Server() throws IOException {
         super(SocketData.PORT);
-        blockedClients = new HashSet<>();
-        clients = FXCollections.observableHashMap();
-        clients.addListener(new ClientsChangeListener(clients, blockedClients));
+        clients = new ServerClients();
         System.out.println( "Servidor socket instanciado" );
     }
     
     private void startServerListener(Socket client) throws Exception{
         System.out.println("Iniciado canal de escuta de dados");
         Contact contact = (Contact) SocketData.readObject(client);
-        clients.put(contact, client);
+        clients.addContact(contact, client);
     }
     
     private void newClient(Socket client){
@@ -46,7 +42,7 @@ public class Server extends ServerSocket {
                     break;
 
                 case SocketData.ConnectionType.REQUEST:
-                    (new ServerRequest(clients,blockedClients,client)).start();
+                    (new ServerRequest(clients,client)).start();
                     break;
 
                 default:
@@ -59,7 +55,7 @@ public class Server extends ServerSocket {
     
     public void start(){
         System.out.println( "Servidor iniciado na porta " + SocketData.PORT );
-        (new AliveClientsService(clients, blockedClients)).start();
+        (new AliveClientsService(clients)).start();
         while (true){
             try {
                 final Socket client = this.accept();

@@ -3,7 +3,6 @@ package elmensajero.data.base;
 
 import elmensajero.Contact;
 import elmensajero.Message;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,41 +13,51 @@ import java.util.logging.Logger;
  */
 public class Database {
     
-    public int addContact (ContactDB contact, Connection connection){
+    public static int addContact (ContactDB contact){
         DatabaseAddContact addC = new DatabaseAddContact();
-        if ( searchContact(contact.getEmail(), connection) != null ){
+        if ( Database.searchContact(contact.getEmail()) != null ){
             return -1;
         }
-        return (addC.addContact(contact, connection) ? 1:0);
+        return (addC.addContact(contact, DatabaseConnection.getConnection()) ? 1:0);
     }
     
-    public Contact[] searchAllContact (ContactDB contact, Connection connection){
+    public static Contact[] searchAllContact (Contact contact){
         DatabaseSearchAllContact srcAll = new DatabaseSearchAllContact();
         try {
-            return srcAll.searchContact(contact, connection);           
+            return srcAll.searchContact(contact, DatabaseConnection.getConnection());
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
-    public Contact searchContact (String email, Connection connection){
+    public static ContactDB searchContact (String email){
         DatabaseSearchContact src = new DatabaseSearchContact();
         try {
-            return src.searchContact(email, connection);
+            return src.searchContact(email, DatabaseConnection.getConnection());
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
-    public boolean addMessage (Message message, Connection connection){
-        DatabaseAddMessage addM = new DatabaseAddMessage();
-        return (addM.addMessage(message, connection));
+    public static ContactDB login(String email, String password){
+        ContactDB contact = Database.searchContact(email);
+        if ( contact != null ){
+            if ( contact.getPassword().equals(password) ){
+                return contact;
+            }
+        }
+        return null;
     }
     
-    public Message[] searchMessage(Contact c1, Contact c2, Connection connection){
+    public static boolean addMessage (Message message){
+        DatabaseAddMessage addM = new DatabaseAddMessage();
+        return (addM.addMessage(message, DatabaseConnection.getConnection()));
+    }
+    
+    public static Message[] searchMessage(Contact c1, Contact c2){
         DatabaseSearchMessage srcM = new DatabaseSearchMessage();
-        return srcM.searchMessages(c1, c2, connection);
+        return srcM.searchMessages(c1, c2, DatabaseConnection.getConnection());
     }
 }
