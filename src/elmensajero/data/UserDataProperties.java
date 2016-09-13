@@ -53,7 +53,7 @@ public class UserDataProperties extends Properties {
         try {
             Properties file = getInstance();
             file.setProperty("email", c.getEmail());
-            file.setProperty("pasword", c.getPassword());
+            file.setProperty("password", c.getPassword());
             file.store(new BufferedOutputStream(new FileOutputStream(USERDATA_FILE)), "UserData");
         } catch (Exception e){
             e.printStackTrace();
@@ -70,6 +70,7 @@ public class UserDataProperties extends Properties {
                 null
             );
         } catch (Exception e){
+            e.printStackTrace();
         }
         return null;
     }

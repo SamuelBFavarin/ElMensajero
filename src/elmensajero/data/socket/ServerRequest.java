@@ -12,8 +12,6 @@ import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -92,10 +90,15 @@ public class ServerRequest {
     private Object getAllMessages(Contact[] contacts) throws Exception{
         Contact a = contacts[0];
         Contact b = contacts[1];
+        System.out.println("Get all messages");
         return Database.searchMessage(a, b);
     }
     
     private Object sendMessage(Message message) throws Exception {
+        if ( !Database.addMessage(message) )
+        {
+            return RetrieveDataListener.SEND_MESSAGE_ERROR;
+        }
         Socket friend = clients.getClients().get(message.getReceptor());
         if ( friend == null ){
             for ( Contact co : clients.getClients().keySet() ){
@@ -105,7 +108,7 @@ public class ServerRequest {
                 }
             }
             if ( friend == null ){
-                return RetrieveDataListener.SEND_MESSAGE_ERROR;
+                return RetrieveDataListener.MESSAGE_SENT;
             }
         }
         while ( clients.getBlockedClients().contains(friend) ){}
@@ -149,7 +152,8 @@ public class ServerRequest {
     }
     
     private Object login(ContactDB contact){
-        return Database.login(contact.getEmail(), contact.getPassword());
+        ContactDB c = Database.login(contact.getEmail(), contact.getPassword());
+        return c;
     }
     
 }

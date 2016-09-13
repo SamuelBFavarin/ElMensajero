@@ -13,8 +13,8 @@ import java.net.Socket;
 public class SocketData {
     private SocketData() {}
     
-    public static final String HOST = "31.220.22.185";
-    public static final int    PORT = 3043;
+    public static final String   HOST = "31.220.22.185";
+    public static final int      PORT = 3043;
     public static final int HTTP_PORT = 8080;
     
     public static class ConnectionType{

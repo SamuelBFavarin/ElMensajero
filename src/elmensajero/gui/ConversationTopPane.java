@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -22,7 +24,7 @@ import javafx.scene.text.Font;
  * Classe que gera a parte esquerda da tela de conversa
  * Possui o nome e a imagem do parcero de conversa
  */
-public class ConversationTopPane extends StackPane {
+public class ConversationTopPane extends HBox {
  
     private final ImageView friendImage;
     private final Label friendName;
@@ -48,8 +50,10 @@ public class ConversationTopPane extends StackPane {
         logoImage.setPadding(new Insets(0,5,0,0));
         
         friendNamePane.setAlignment(Pos.CENTER_LEFT);
-        friendImagePane.setAlignment(Pos.BASELINE_CENTER);
+        friendImagePane.setAlignment(Pos.CENTER);
         logoImage.setAlignment(Pos.CENTER_RIGHT);
+        
+        HBox.setHgrow(friendNamePane, Priority.ALWAYS);
         
         this.getChildren().add(friendImagePane);
         this.getChildren().add(friendNamePane);
@@ -80,8 +84,7 @@ public class ConversationTopPane extends StackPane {
     private ImageView initFriendImage(){
         ImageView avatar = new ImageView();
         avatar.setFitHeight(70);
-//        avatar.setPreserveRatio(true);
-//        avatar.setSmooth(true);
+        avatar.setFitWidth(70);
         avatar.setCache(true);
         avatar.setEffect(new DropShadow(15, Color.BLACK));
         return avatar;
@@ -103,6 +106,7 @@ public class ConversationTopPane extends StackPane {
             );
             logo = new ImageView(logoImage);
             logo.setFitHeight(70);
+            logo.setFitWidth(70);
             logo.setEffect(new DropShadow(15, Color.BLACK));
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -120,7 +124,12 @@ public class ConversationTopPane extends StackPane {
         Platform.runLater(() -> {
             friendName.setText( contact.getName() );
             try {
-                friendImage.setImage( new Image("http://"+SocketData.HOST+":"+SocketData.HTTP_PORT+"/"+contact.getImage(), true) );
+                friendImage.setImage( new Image(
+                    "http://"+SocketData.HOST+":"+SocketData.HTTP_PORT+"/"+contact.getImage(),
+                    70,70,
+                    false,false,
+                    true
+                ));
             } catch ( Exception e) {
                 e.printStackTrace();
                 friendImage.setImage(null);
