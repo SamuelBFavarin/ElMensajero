@@ -4,6 +4,8 @@ import elmensajero.components.CustomPasswordField;
 import elmensajero.components.CustomTextField;
 import elmensajero.validators.EmailValidator;
 import elmensajero.validators.SimpleValidator;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -11,9 +13,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -35,7 +47,10 @@ public class LoginPane extends GridPane {
     }
 
     private void init() {
+        
+       
 
+             
         this.setHgap(20);
         this.setVgap(20);
         this.setAlignment(Pos.CENTER);
@@ -44,6 +59,7 @@ public class LoginPane extends GridPane {
 
         this.add(new Label("E-Mail:"), 0, 1);
         this.add(new Label("Senha:"), 0, 2);
+        this.add(initLogoImage(), 2, 0, 1, 1);
 
         email = new CustomTextField();
         password = new CustomPasswordField();
@@ -63,6 +79,7 @@ public class LoginPane extends GridPane {
     private Node initTitle() {
         Label title = new Label("Login El Mensajero");
         title.setFont(Font.font("Tahoma", FontWeight.NORMAL, 22));
+        title.setTextFill(Color.web("#FFFFFF"));
         return title;
     }
 
@@ -89,7 +106,22 @@ public class LoginPane extends GridPane {
         login.setOnMouseClicked(loginButtonListener(login, cancel));
         return buttons;
     }
-
+    
+    private ImageView initLogoImage() {
+        ImageView logo = null;
+        try {
+            Image logoImage = new Image(
+                new FileInputStream("./logo.png"),
+                50,50, // width X height
+                true, true // preserveRatio // smooth
+            );
+            logo = new ImageView(logoImage);
+            logo.setFitHeight(50);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return logo;
+    }
     private Button initButton(String text) {
         Button btn = new Button(text);
         btn.setAlignment(Pos.BASELINE_RIGHT);

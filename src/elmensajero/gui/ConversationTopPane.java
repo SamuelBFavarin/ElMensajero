@@ -109,6 +109,8 @@ public class ConversationTopPane extends StackPane {
         return logo;
     }
     
+    
+    
     /**
      * Define os componentes da interface grafica para o contato
      * recebido por parametro.

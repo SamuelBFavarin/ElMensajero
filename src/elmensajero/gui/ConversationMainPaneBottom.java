@@ -1,6 +1,4 @@
-﻿
 package elmensajero.gui;
-
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -12,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
 
 /**
  * classe ConversationMainPaneBottom.

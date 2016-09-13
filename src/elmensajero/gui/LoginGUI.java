@@ -4,7 +4,13 @@ import java.io.File;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -26,12 +32,13 @@ public class LoginGUI extends StackPane {
     
     public LoginGUI(Stage stage) {
         super();
-        
         this.setStyle(
-            "-fx-focus-color: transparent;"
-           +"-fx-background-color: #F0F0F0"
+            "-fx-background-image: url(" +
+                "'http://imgview.info/download/20150710/sunrise-sunlight-sky-wallpapers-2560x1440.png'" +
+            "); " +
+            "-fx-background-size: cover;"
         );
-        
+
         loginPane = new LoginPane();
         registerPane = new RegisterPane(stage);
         this.getChildren().setAll(loginPane);

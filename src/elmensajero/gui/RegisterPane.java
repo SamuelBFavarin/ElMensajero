@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
@@ -44,7 +45,7 @@ public class RegisterPane extends GridPane {
     }
 
     private void init() {
-
+        
         this.setHgap(20);
         this.setVgap(20);
         this.setAlignment(Pos.CENTER);
@@ -94,6 +95,7 @@ public class RegisterPane extends GridPane {
 
     private Node initTitle() {
         Label title = new Label("Cadastro El Mensajero");
+        title.setTextFill(Color.web("#FFFFFF"));
         title.setFont(Font.font("Tahoma", FontWeight.NORMAL, 22));
         return title;
     }
