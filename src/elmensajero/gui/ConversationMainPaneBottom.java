@@ -6,6 +6,8 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -51,6 +53,12 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
             sendButtonClickedListener.sendMessage("ARRIBA");
             System.out.println("ARRIBA");
         });
+        
+        txtArea.addEventHandler(KeyEvent.KEY_TYPED, (KeyEvent event) -> {
+            if ( event.getCode() == KeyCode.ENTER ){
+                sendButton.fire();
+            }
+        });
 
         HBox.setHgrow(txtArea, Priority.ALWAYS);
         
@@ -75,6 +83,7 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         txtArea.setMaxHeight(125);
         txtArea.setWrapText(true);
         txtArea.setEffect(new DropShadow(6, Color.BLACK));
+        
     }
     
     /**

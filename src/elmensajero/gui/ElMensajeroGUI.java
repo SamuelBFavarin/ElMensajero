@@ -244,7 +244,7 @@ public class ElMensajeroGUI extends BorderPane {
     }
     
     public void initArribaSong(){
-        File file = new File("C://Users//Rafael//Documents//GitHub//ElMensajero//ElMensajero//arriba.mp3");
+        File file = new File("./arriba.mp3");
         try {
             Media audio = new Media(file.toURI().toURL().toString());
             MediaPlayer player = new MediaPlayer(audio);
