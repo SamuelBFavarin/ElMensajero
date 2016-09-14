@@ -144,7 +144,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         if("ARRIBA".equals(message.getMessage())){
             Platform.runLater(() -> {
                 
-                Label arribaMessage = new Label(message.getSender().getName()+"  ENVIOU UM ARRIBA!!! ");
+                Label arribaMessage = new Label(message.getSender().getName()+"  ENVIOU UM ARRIBA ");
                 arribaMessage.setAlignment(Pos.CENTER);
                 arribaMessage.setStyle("-fx-background-color: #bfbfbf;");
                 arribaMessage.setPadding(new Insets(5, 5, 5, 5));
@@ -192,7 +192,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
             for(int i = 0; i < message.length; i++){
 
                 if("ARRIBA".equals(message[i].getMessage())){
-                    Label arribaMessage = new Label(message[i].getSender().getName()+" ENVIOU UM ARRIBA!!! ");
+                    Label arribaMessage = new Label(message[i].getSender().getName()+" ENVIOU UM ARRIBA ");
                     arribaMessage.setAlignment(Pos.CENTER);
                     arribaMessage.setStyle("-fx-background-color: #bfbfbf;");
                     arribaMessage.setPadding(new Insets(5, 5, 5, 5));
