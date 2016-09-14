@@ -66,13 +66,6 @@ public class LoginPane extends GridPane {
         return title;
     }
 
-    private TextField initField(boolean password) {
-        if (password) {
-            return new PasswordField();
-        }
-        return new TextField();
-    }
-
     private Node initButtons() {
         HBox buttons = new HBox(10);
         buttons.setAlignment(Pos.CENTER_RIGHT);

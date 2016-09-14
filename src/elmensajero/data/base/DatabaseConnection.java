@@ -31,7 +31,6 @@ public class DatabaseConnection {
                 databaseData.getProperty("user"),
                 databaseData.getProperty("password")
             );
-         
         }catch(SQLException e){
             System.err.println(e);
         }

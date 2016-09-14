@@ -3,6 +3,7 @@ package elmensajero.gui;
 import elmensajero.Contact;
 import elmensajero.Message;
 import elmensajero.data.RetrieveDataListener;
+import elmensajero.data.base.ContactDB;
 import java.util.Calendar;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -27,12 +28,14 @@ import javafx.stage.StageStyle;
 public class ElMensajeroGUI extends BorderPane {
     
     private static final double WIDTH = 700, HEIGHT = 500;
+    
     private final Scene scene;
     private final Stage stage;
+    private final AppMenuBar menuBar;
     private final Contacts contactsBox;
     private final Conversation conversation;
     
-    private Contact contact, userData;
+    private Contact userData, contact;
     private final RetrieveDataListener retrieveDataListener;
     
     /**
@@ -46,25 +49,36 @@ public class ElMensajeroGUI extends BorderPane {
      * @see elmensajero.gui.Conversation
      * 
      * @param stage
+     * @param loginGUI
      * @param contacts
      * @param retrieveDataListener
      */
-    public ElMensajeroGUI(Stage stage, ObservableList<Contact> contacts, RetrieveDataListener retrieveDataListener) {
+    public ElMensajeroGUI(Stage stage, LoginGUI loginGUI, ObservableList<Contact> contacts, RetrieveDataListener retrieveDataListener) {
         super();
         this.contact = null;
         this.retrieveDataListener = retrieveDataListener;
         
+        this.stage = stage;
+        
+        menuBar = new AppMenuBar(stage, retrieveDataListener, loginGUI, this);
         contactsBox = new Contacts(contacts);
         conversation = new Conversation();
         
-        setListeners();
-        
+        scene = initScene();
+        initListeners();
+    }
+    
+    /**
+     * Inicializa as propriedades do componente de interface grafica e 
+     * a scene principal
+     */
+    private Scene initScene()
+    {
         this.setLeft(contactsBox);
         this.setCenter(conversation);
-        this.setStyle("-fx-focus-color: transparent");
-        
-        this.scene = new Scene(this, WIDTH, HEIGHT);
-        this.stage = stage;
+        this.setTop(menuBar);
+        this.setStyle("-fx-focus-color: transparent");    
+        return new Scene(this, WIDTH, HEIGHT);
     }
     
     /**
@@ -72,7 +86,7 @@ public class ElMensajeroGUI extends BorderPane {
      * Define os listeners de acordo com a acao necessaria
      * para execucao
      */
-    private void setListeners(){
+    private void initListeners(){
         contactsBox.setContactClicked((Contact c) -> {
             loadConversation(c);
         });
@@ -147,8 +161,9 @@ public class ElMensajeroGUI extends BorderPane {
      * 
      * @param userData
      */
-    public void setUserData(Contact userData){
+    public void setUserData(ContactDB userData){
         this.userData = userData;
+        menuBar.setUserData(userData);
         contactsBox.setUserData(userData);
     }
     

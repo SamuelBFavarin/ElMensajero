@@ -12,11 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Client.java</file>
             <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/ElMensajero.java</file>
-            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/gui/LoginGUI.java</file>
-            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/ServerRequest.java</file>
-            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/data/socket/Server.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/gui/RegisterPane.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/gui/ElMensajeroGUI.java</file>
+            <file>file:/D:/Arquivos%20Notebook/_Programacao/GitHub/ElMensajero/src/elmensajero/gui/AppMenuBar.java</file>
         </group>
     </open-files>
 </project-private>

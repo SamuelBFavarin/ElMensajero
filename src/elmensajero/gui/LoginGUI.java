@@ -18,7 +18,7 @@ import javafx.stage.StageStyle;
  */
 public class LoginGUI extends StackPane {
 
-    private static final double WIDTH = 350, HEIGHT = 320;
+    private static final double WIDTH = 350, HEIGHT = 390;
     private final Scene scene;
     private final Stage stage;
     
@@ -28,17 +28,22 @@ public class LoginGUI extends StackPane {
     public LoginGUI(Stage stage) {
         super();
         
+        loginPane = new LoginPane();
+        registerPane = new RegisterPane( stage, "Cadastro El Mensajero" );
+        
+        init();
+        
+        this.stage = stage;
+        this.scene = new Scene( this, WIDTH, HEIGHT );
+    }
+    
+    private void init()
+    {   
         this.setStyle(
             "-fx-focus-color: transparent;"
            +"-fx-background-color: #F0F0F0"
         );
-        
-        loginPane = new LoginPane();
-        registerPane = new RegisterPane(stage);
-        this.getChildren().setAll(loginPane);
-        
-        this.stage = stage;
-        this.scene = new Scene( this, WIDTH, HEIGHT );
+        this.getChildren().setAll( loginPane );
         
         loginPane.setRegisterButtonClickedListener((MouseEvent m) -> {
             this.getChildren().setAll(registerPane);
@@ -77,9 +82,12 @@ public class LoginGUI extends StackPane {
      */
     public void show(){
         Platform.runLater(() -> {
+            this.getChildren().setAll(loginPane);
             stage.setTitle("Login El Mensajero");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
+            stage.setHeight(HEIGHT);
+            stage.setWidth(WIDTH);
             stage.setScene(scene);
             stage.show();
         });

@@ -21,6 +21,11 @@ public class Database {
         return (addC.addContact(contact, DatabaseConnection.getConnection()) ? 1:0);
     }
     
+    public static boolean editContact (ContactDB contact){
+        DatabaseEditContact editC = new DatabaseEditContact();
+        return editC.editContact(contact, DatabaseConnection.getConnection());
+    }
+    
     public static Contact[] searchAllContact (Contact contact){
         DatabaseSearchAllContact srcAll = new DatabaseSearchAllContact();
         try {

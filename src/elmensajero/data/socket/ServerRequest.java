@@ -56,6 +56,11 @@ public class ServerRequest {
             case RetrieveDataListener.NEW_USER:
                 System.out.println("Novo usuario");
                 returnP = newUser((ContactDB) parameter);
+                break;            
+            
+            case RetrieveDataListener.EDIT_USER:
+                System.out.println("Edicao usuario");
+                returnP = editUser((ContactDB) parameter);
                 break;
             
             case RetrieveDataListener.LOGIN:
@@ -153,6 +158,10 @@ public class ServerRequest {
     
     private Object newUser(ContactDB contact){
         return Database.addContact(contact);
+    }
+    
+    private Object editUser(ContactDB contact){
+        return Database.editContact(contact);
     }
     
     private Object login(ContactDB contact){
