@@ -2,7 +2,10 @@
 package elmensajero.gui;
 
 import elmensajero.Contact;
+import elmensajero.Message;
 import elmensajero.data.SocketData;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 
 import javafx.collections.ObservableList;
@@ -51,7 +54,6 @@ class Contacts extends BorderPane{
      */
     public Contacts(ObservableList<Contact> contacts){
         super();
-        
         filterField = new FilterField(contacts);
         
         contactsListView = new ContactsListView( filterField.getFilteredList() );
@@ -62,6 +64,15 @@ class Contacts extends BorderPane{
 
         this.setPrefWidth(200);
         this.setMaxWidth(300);
+    }
+    
+    /**
+     * Adiciona mensagem não lida a lista de contatos.
+     * 
+     * @param message 
+     */
+    public void addUnreadMessage(Message message){
+        contactsListView.addUnreadMessage(message);
     }
     
     /**

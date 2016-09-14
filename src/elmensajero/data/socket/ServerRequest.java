@@ -90,34 +90,38 @@ public class ServerRequest {
     private Object getAllMessages(Contact[] contacts) throws Exception{
         Contact a = contacts[0];
         Contact b = contacts[1];
-        System.out.println("Get all messages");
         return Database.searchMessage(a, b);
     }
     
-    private Object sendMessage(Message message) throws Exception {
+    private Object sendMessage(final Message message) throws Exception {
         if ( !Database.addMessage(message) )
         {
             return RetrieveDataListener.SEND_MESSAGE_ERROR;
         }
-        Socket friend = clients.getClients().get(message.getReceptor());
-        if ( friend == null ){
+        Socket contact = clients.getClients().get(message.getReceptor());
+        if ( contact == null ){
             for ( Contact co : clients.getClients().keySet() ){
                 if ( co.equals(message.getReceptor()) ){
-                    friend = clients.getClients().get(co);
+                    contact = clients.getClients().get(co);
                     break;
                 }
             }
-            if ( friend == null ){
+            if ( contact == null ){
                 return RetrieveDataListener.MESSAGE_SENT;
             }
         }
-        while ( clients.getBlockedClients().contains(friend) ){}
-        clients.getBlockedClients().add(friend);
-        
-        SocketData.writeByte(friend, DataListener.MESSAGE_RECEIVED);
-        SocketData.writeObject(friend, message);
-        
-        clients.getBlockedClients().remove(friend);
+        final Socket friend = contact;
+        new Thread(() -> {
+            while ( clients.getBlockedClients().contains(friend) ){}
+            clients.getBlockedClients().add(friend);
+                try {
+                    SocketData.writeByte(friend, DataListener.MESSAGE_RECEIVED);
+                    SocketData.writeObject(friend, message);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            clients.getBlockedClients().remove(friend);
+        }).start();
         return RetrieveDataListener.MESSAGE_SENT;
     }
     
@@ -130,7 +134,7 @@ public class ServerRequest {
         DataInputStream in = new DataInputStream( client.getInputStream() );
 
         SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-        OutputStream out = new BufferedOutputStream(new FileOutputStream("./img/" + filename));
+        OutputStream out = new BufferedOutputStream(new FileOutputStream("../http/img/" + filename));
         int aByte;
         do{
             aByte = in.readInt();

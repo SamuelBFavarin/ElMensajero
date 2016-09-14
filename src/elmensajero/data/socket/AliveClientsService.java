@@ -5,7 +5,6 @@ import elmensajero.Contact;
 import elmensajero.data.SocketData;
 import java.net.Socket;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,15 +33,15 @@ public class AliveClientsService implements Runnable {
     
     private void testClient(Contact contact){
         Socket client = clients.getClients().get(contact);
-        if ( clients.getBlockedClients().contains( client ) )
+        if ( clients.getBlockedClients().contains( client ) ){
             return;
+        }
         clients.getBlockedClients().add(client);
         
-        if (!SocketData.testConnection(client)){
-            
+        if (!SocketData.testConnection(client))
+        {
             System.out.println("Contato sem resposta removido: "+contact.getName());
             clients.removeContact(contact);
-            
         }
         
         clients.getBlockedClients().remove(client);

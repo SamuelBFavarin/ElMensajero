@@ -2,6 +2,8 @@ package elmensajero.data.socket;
 
 import elmensajero.Contact;
 import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactDB;
+import elmensajero.data.base.Database;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -25,7 +27,12 @@ public class Server extends ServerSocket {
     
     private void startServerListener(Socket client) throws Exception{
         System.out.println("Iniciado canal de escuta de dados");
-        Contact contact = (Contact) SocketData.readObject(client);
+        ContactDB contact = (ContactDB) SocketData.readObject(client);
+        contact = Database.login(contact.getEmail(), contact.getPassword());
+        if ( contact == null ){
+            client.close();
+        }
+        contact.setStatus(Contact.Status.ONLINE);
         clients.addContact(contact, client);
     }
     
@@ -70,6 +77,7 @@ public class Server extends ServerSocket {
     
     public static void main(String[] args){
         try {
+            System.in.close();
             (new Server()).start();
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);

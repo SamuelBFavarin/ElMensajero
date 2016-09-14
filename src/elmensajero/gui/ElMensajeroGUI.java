@@ -1,4 +1,3 @@
-
 package elmensajero.gui;
 
 import elmensajero.Contact;
@@ -78,9 +77,6 @@ public class ElMensajeroGUI extends BorderPane {
             loadConversation(c);
         });
         conversation.setSendButtonClickedListener((String message) -> {
-            System.out.println("Enviando mensagem:"
-                    + "\nuser: "+userData.getName()
-                    + "\ncontact"+contact.getName());
             Message m = new Message(
                 userData,
                 contact,
@@ -101,13 +97,13 @@ public class ElMensajeroGUI extends BorderPane {
     /**
      * Carrega a conversa com o usuario enviado por parametro.
      * 
-     * @param c
+     * @param contact
      */
-    private void loadConversation(Contact c){
-        this.contact = c;
+    private void loadConversation(Contact contact){
+        this.contact = contact;
         new Thread(() -> {
-            conversation.setContact(c);
-            Message[] messages = retrieveDataListener.getAllMessages(userData, c);
+            conversation.setContact(contact);
+            Message[] messages = retrieveDataListener.getAllMessages(userData, contact);
             setMessages(messages);
         }, "Load conversation").start();
     }
@@ -169,7 +165,7 @@ public class ElMensajeroGUI extends BorderPane {
         if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
             conversation.addMessage( message, this.userData );
         } else {
-            System.out.println("Deveria adicionar na lista em mensagens não lidas");
+            contactsBox.addUnreadMessage(message);
         }
     }
     
