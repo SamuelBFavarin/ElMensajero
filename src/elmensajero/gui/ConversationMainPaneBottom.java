@@ -37,6 +37,7 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
     */
     public ConversationMainPaneBottom() {
         sendButtonClickedListener = null;
+
         
         initTextArea();
         Button sendButton = initButton("ENVIAR");
@@ -45,6 +46,11 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         
         sendButton.setOnMouseClicked(this);
         
+        arribaButton.setOnMouseClicked((MouseEvent event) -> {
+            if ( this.sendButtonClickedListener == null ) return;
+            sendButtonClickedListener.sendMessage("ARRIBA");
+            System.out.println("ARRIBA");
+        });
 
         HBox.setHgrow(txtArea, Priority.ALWAYS);
         
@@ -100,6 +106,7 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         this.sendButtonClickedListener = listener;
     }
     
+
     /**
      * Metodo chamado pela intergace grafica de quando o botao de enviar
      * mensagem for clicado.
@@ -116,6 +123,8 @@ public class ConversationMainPaneBottom extends HBox implements EventHandler<Mou
         sendButtonClickedListener.sendMessage( txtArea.getText() );
         txtArea.setText("");
     }
+    
+
     
     /**
      * Interface do listener do clique do botao de enviar mensagem da

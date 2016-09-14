@@ -6,10 +6,14 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -136,8 +140,26 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      */
     public void addMessage(final Message message, final Contact contact){
         
-        boolean sender = (message.getSender().equals(contact));
         
+        if("ARRIBA".equals(message.getMessage())){
+            Platform.runLater(() -> {
+                
+                Label arribaMessage = new Label(message.getSender().getName()+"  ENVIOU UM ARRIBA!!! ");
+                arribaMessage.setAlignment(Pos.CENTER);
+                arribaMessage.setStyle("-fx-background-color: #bfbfbf;");
+                arribaMessage.setPadding(new Insets(5, 5, 5, 5));
+                
+                StackPane spane = new StackPane(arribaMessage);
+                messages.getChildren().add(spane);
+                if ( scroll.getVvalue() == 1d ){
+                    fixScrollFlag = true;
+                }
+            });
+            return; 
+        }
+        
+        boolean sender = (message.getSender().equals(contact));
+       
         final MessageBox box = new MessageBox( message, sender, (this.getWidth()-40) * 0.8f );
         Platform.runLater(() -> {
             messages.getChildren().add(box);
@@ -165,14 +187,27 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
      */
     public void setMessages(final Message[] message, final Contact contact){
         
-        final MessageBox[] boxes = new MessageBox[message.length];
+        final Node[] boxes = new Node[message.length];
         final double size = (this.getWidth()-40) * 0.8f;
-        
-        for(int i = 0; i < message.length; i++){
-            boolean sender = ( message[i].getSender().equals(contact) );
-            boxes[i] = new MessageBox( message[i], sender, size );
-        }
+            for(int i = 0; i < message.length; i++){
+
+                if("ARRIBA".equals(message[i].getMessage())){
+                    Label arribaMessage = new Label(message[i].getSender().getName()+" ENVIOU UM ARRIBA!!! ");
+                    arribaMessage.setAlignment(Pos.CENTER);
+                    arribaMessage.setStyle("-fx-background-color: #bfbfbf;");
+                    arribaMessage.setPadding(new Insets(5, 5, 5, 5));
+                    
+
+                    StackPane spane = new StackPane(arribaMessage);
+                    boxes[i] = spane;
+                    continue;
+                }
+
+                boolean sender = ( message[i].getSender().equals(contact) );
+                boxes[i] = new MessageBox( message[i], sender, size );
+            }
         Platform.runLater(() -> {
+
             messages.getChildren().setAll(boxes);
             fixScrollFlag = true;
         });
