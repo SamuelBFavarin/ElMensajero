@@ -4,6 +4,8 @@ import elmensajero.Contact;
 import elmensajero.Message;
 import elmensajero.data.RetrieveDataListener;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -77,19 +79,22 @@ public class ElMensajeroGUI extends BorderPane {
             loadConversation(c);
         });
         conversation.setSendButtonClickedListener((String message) -> {
-            Message m = new Message(
-                userData,
-                contact,
-                message,
-                Calendar.getInstance().getTime()
-            );
-            new Thread(() -> {
-                if ( retrieveDataListener.sendMessage(m) ){
-                    addMessage(m);
-                } else {
-                    showError("Falha ao enviar mensagem: "+m.getMessage());
-                }
-            }, "Send Message").start();
+
+                Message m = new Message(
+                    userData,
+                    contact,
+                    message,
+                    Calendar.getInstance().getTime()
+                );
+
+                new Thread(() -> {
+                    if ( retrieveDataListener.sendMessage(m) ){
+                        addMessage(m);
+                    } else {
+                        showError("Falha ao enviar mensagem: "+m.getMessage());
+                    }
+                }, "Send Message").start();
+            
         });
         
     }
@@ -162,11 +167,21 @@ public class ElMensajeroGUI extends BorderPane {
      * @param message
      */
     public void addMessage(Message message){
-        if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
-            conversation.addMessage( message, this.userData );
-        } else {
-            contactsBox.addUnreadMessage(message);
+
+        if("ARRIBA".equals(message.getMessage())){
+            try {
+                initArribaEvent();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ElMensajeroGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
+                conversation.addMessage( message, this.userData );
+            } else {
+                contactsBox.addUnreadMessage(message);
+            }
         }
+        
     }
     
     /**
@@ -187,5 +202,27 @@ public class ElMensajeroGUI extends BorderPane {
     public void setContact(Contact contact){
         loadConversation(contact);
     }
+    
+    public void initArribaEvent() throws InterruptedException{
+        double posX = stage.getX();
+        double posY = stage.getY();
+        
+        stage.setX(posX-5);
+        stage.setY(posY+5);
+        Thread.sleep(100);
+        stage.setX(posX+10);
+        stage.setY(posY-10);
+        Thread.sleep(100);
+        stage.setX(posX-10);
+        stage.setY(posY+10);
+        Thread.sleep(100);
+        stage.setX(posX+10);
+        stage.setY(posY-5);
+        Thread.sleep(100);
+        stage.setX(posX);
+        stage.setY(posY);
+        
+    }
+
     
 }

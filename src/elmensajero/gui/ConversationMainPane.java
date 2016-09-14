@@ -137,7 +137,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     public void addMessage(final Message message, final Contact contact){
         
         boolean sender = (message.getSender().equals(contact));
-        
+       
         final MessageBox box = new MessageBox( message, sender, (this.getWidth()-40) * 0.8f );
         Platform.runLater(() -> {
             messages.getChildren().add(box);
