@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
@@ -76,8 +77,27 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         vbox.setSpacing(5);
         vbox.paddingProperty().set(new Insets(50,20,15,20));
         vbox.heightProperty().addListener( this );
+        vbox.widthProperty().addListener( initWidthChangeListener() );
         return vbox;
     }
+    
+    /**
+     * Cria listener para mudanca de largura do VBox de mensagens,
+     * que nele passa por cada mensagem e define a largura maxima da 
+     * label de conteudo para 80% do tamanho disponivel
+     * 
+     */
+    private ChangeListener<Number> initWidthChangeListener(){
+        return (ObservableValue<? extends Number> obs, Number o, Number n) -> {
+            double size = (this.getWidth()-40) * 0.8f;
+            for ( Node m : messages.getChildren() ){
+                if ( m instanceof MessageBox ){
+                    ((MessageBox) m).getLabel().setMaxWidth( size );
+                }
+            }
+        };
+    }
+    
 
     /**
      * Metodo chamado pela interface.
@@ -118,7 +138,7 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
         
         boolean sender = (message.getSender().equals(contact));
         
-        final MessageBox box = new MessageBox(message,sender);
+        final MessageBox box = new MessageBox( message, sender, (this.getWidth()-40) * 0.8f );
         Platform.runLater(() -> {
             messages.getChildren().add(box);
             if ( scroll.getVvalue() == 1d ){
@@ -146,10 +166,11 @@ public class ConversationMainPane extends BorderPane implements ChangeListener{
     public void setMessages(final Message[] message, final Contact contact){
         
         final MessageBox[] boxes = new MessageBox[message.length];
+        final double size = (this.getWidth()-40) * 0.8f;
         
         for(int i = 0; i < message.length; i++){
             boolean sender = ( message[i].getSender().equals(contact) );
-            boxes[i] = new MessageBox( message[i], sender );
+            boxes[i] = new MessageBox( message[i], sender, size );
         }
         Platform.runLater(() -> {
             messages.getChildren().setAll(boxes);
