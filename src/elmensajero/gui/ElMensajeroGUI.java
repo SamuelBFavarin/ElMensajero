@@ -3,6 +3,8 @@ package elmensajero.gui;
 import elmensajero.Contact;
 import elmensajero.Message;
 import elmensajero.data.RetrieveDataListener;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +13,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -170,6 +174,7 @@ public class ElMensajeroGUI extends BorderPane {
 
         if("ARRIBA".equals(message.getMessage())){
             try {
+                initArribaSong();
                 initArribaEvent();
             } catch (InterruptedException ex) {
                 Logger.getLogger(ElMensajeroGUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -222,6 +227,17 @@ public class ElMensajeroGUI extends BorderPane {
         stage.setX(posX);
         stage.setY(posY);
         
+    }
+    
+    public void initArribaSong(){
+        File file = new File("C://Users//Rafael//Documents//GitHub//ElMensajero//ElMensajero//arriba.mp3");
+        try {
+            Media audio = new Media(file.toURI().toURL().toString());
+            MediaPlayer player = new MediaPlayer(audio);
+            player.play();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(ElMensajeroGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     
