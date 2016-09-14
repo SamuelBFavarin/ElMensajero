@@ -179,12 +179,11 @@ public class ElMensajeroGUI extends BorderPane {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ElMensajeroGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
-            if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
-                conversation.addMessage( message, this.userData );
-            } else {
-                contactsBox.addUnreadMessage(message);
-            }
+        }
+        if ( message.getSender().equals(userData) || message.getSender().equals(contact) ){
+            conversation.addMessage( message, this.userData );
+        } else {
+            contactsBox.addUnreadMessage(message);
         }
         
     }
