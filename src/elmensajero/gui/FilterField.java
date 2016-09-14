@@ -67,7 +67,7 @@ public class FilterField extends TextField implements EventHandler<KeyEvent>, Li
     private void filter(){
         List<Contact> cs = new ArrayList<>();
         for (Contact c : contacts){
-            if ( c.getName().contains( this.getText() ) ){
+            if ( c.getName().toUpperCase().contains(this.getText().toUpperCase()) ){
                 cs.add(c);
             }
         }

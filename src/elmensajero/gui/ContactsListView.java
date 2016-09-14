@@ -35,7 +35,7 @@ import javafx.scene.text.FontWeight;
  */
 class ContactsListView extends ListView<Contact> implements EventHandler<MouseEvent> {
     
-    private final Map<Contact,Integer> unreadMessages;
+    private final Map<String,Integer> unreadMessages;
 
     private ContactClicked contactClickedListener;
     
@@ -61,11 +61,11 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
      * @param message 
      */
     public void addUnreadMessage(Message message){
-        Integer countMessages = unreadMessages.get(message.getSender());
+        Integer countMessages = unreadMessages.get(message.getSender().getEmail());
         if ( countMessages == null ){
-            unreadMessages.put(message.getSender(), 1);
+            unreadMessages.put(message.getSender().getEmail(), 1);
         } else {
-            unreadMessages.put(message.getSender(), 1 + countMessages);
+            unreadMessages.put(message.getSender().getEmail(), 1 + countMessages);
         }
         Platform.runLater(() -> {
             this.refresh();
@@ -101,6 +101,7 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
         private final Color offlineColor;
         private final Label nameLabel;
         private final Node node;
+        
         /**
          * Instancia os atributos.
          */
@@ -131,8 +132,8 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
             
         }
         /**
-         * Coloca o texto na celula e o quadrado 
-         * indicando o status do usuario
+         * Coloca o texto na celula e o quadrado indicando o status do usuario.
+         * Desenha tambem o numero de mensagens nao lidas caso tenha alguma
          */
         @Override
         protected void updateItem(Contact contact, boolean empty) {
@@ -143,7 +144,7 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
                 return;
             }
             
-            Integer unreadCount = unreadMessages.get(contact);
+            Integer unreadCount = unreadMessages.get(contact.getEmail());
             if ( unreadCount == null ){
                 right.setVisible(false);
             } else {
@@ -188,7 +189,7 @@ class ContactsListView extends ListView<Contact> implements EventHandler<MouseEv
         Contact contact = ContactsListView.this.getSelectionModel().getSelectedItem();
         if ( contact == null || contactClickedListener == null )
             return;
-        unreadMessages.remove(contact);
+        unreadMessages.remove(contact.getEmail());
         this.refresh();
         contactClickedListener.contactClicked(contact);
     }
