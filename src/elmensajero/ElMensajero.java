@@ -114,7 +114,7 @@ public class ElMensajero extends Application {
         }
     }
     
-    private void startGUI(Contact user){
+    private void startGUI(ContactDB user){
         gui.setUserData( user );            
         gui.show();
         socketClient.start( user );
@@ -166,10 +166,9 @@ public class ElMensajero extends Application {
                 switch ( res ){
                     case 1:
                         UserDataProperties.setUserData(user);
-                        startGUI(new Contact(
-                            name, email, image,
-                            Contact.Status.ONLINE
-                        ));
+                        user.setStatus(Contact.Status.ONLINE);
+                        System.out.println("Name: "+user.getName());
+                        startGUI(user);
                         break;
                     case -1:
                         login.showError("E-Mail já está em uso");
@@ -188,8 +187,8 @@ public class ElMensajero extends Application {
     public void start(Stage stage) throws FileNotFoundException, Exception {
         stage.getIcons().add(new Image(new FileInputStream("./logo.png")));
         
-        gui = new ElMensajeroGUI( stage, contacts, socketClient );
         login = new LoginGUI(stage);
+        gui = new ElMensajeroGUI( stage, login, contacts, socketClient );
         login.setLoginListener(new LoginGUIListener());
         
         new Thread(() -> {

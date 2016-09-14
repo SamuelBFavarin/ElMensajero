@@ -1,10 +1,17 @@
 package elmensajero.gui;
 
+import elmensajero.Contact;
 import elmensajero.components.CustomPasswordField;
 import elmensajero.components.CustomTextField;
+import elmensajero.data.SocketData;
+import elmensajero.data.base.ContactDB;
 import elmensajero.validators.EmailValidator;
 import elmensajero.validators.SimpleValidator;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -13,9 +20,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,8 +38,11 @@ import javafx.stage.StageStyle;
  */
 public class RegisterPane extends GridPane {
 
+    private final boolean edit;
+    
     private CustomTextField name, email, image;
     private CustomPasswordField password;
+    private ImageView imageView;
     private File imageFile;
 
     private final Stage stage;
@@ -41,19 +51,37 @@ public class RegisterPane extends GridPane {
 
     private LoginGUI.LoginListener loginListener;
 
-    public RegisterPane(Stage stage) {
+    public RegisterPane(Stage stage, String title) {
+        edit = false;
         this.stage = stage;
         loginListener = null;
-        init();
+        init(title);
+    }
+    
+    public RegisterPane(Stage stage, String title, boolean edit) {
+        this.edit = edit;
+        this.stage = stage;
+        this.loginListener = null;
+        init(title);
     }
 
-    private void init() {
+    public void setUserData(ContactDB userData){
+        email.setEditable(false);
+        name.setText(userData.getName());
+        email.setText(userData.getEmail());
+        image.setText(userData.getImage());
+        imageView.setImage(new Image(
+            "http://" + SocketData.HOST + ":" +SocketData.HTTP_PORT + "/" + userData.getImage(),
+        true));
+    }
+    
+    private void init(String title) {
 
         this.setHgap(20);
         this.setVgap(20);
         this.setAlignment(Pos.CENTER);
 
-        this.add(initTitle(), 0, 0, 2, 1);
+        this.add(initTitle(title), 0, 0, 2, 1);
 
         this.add(new Label("Nome:"), 0, 1);
         this.add(new Label("E-Mail:"), 0, 2);
@@ -93,11 +121,14 @@ public class RegisterPane extends GridPane {
         this.add(password, 1, 3);
         this.add(imageChooser, 1, 4);
 
-        this.add(initButtons(), 0, 5, 2, 1);
+        imageView = initImageView();
+        this.add( imageView, 1, 5 );
+        
+        this.add(initButtons(), 0, 6, 2, 1);
     }
 
-    private Node initTitle() {
-        Label title = new Label("Cadastro El Mensajero");
+    private Node initTitle(String titleTxt) {
+        Label title = new Label(titleTxt);
         title.setFont(Font.font("Tahoma", FontWeight.NORMAL, 22));
         return title;
     }
@@ -108,13 +139,15 @@ public class RegisterPane extends GridPane {
 
         backToLogin = initButton("Voltar");
         Button cancel = initButton("Cancelar");
-        Button register = initButton("Cadastrar-se");
+        Button register = initButton( (edit) ? "Salvar":"Cadastrar-se" );
 
         buttons.getChildren().add(backToLogin);
-        buttons.getChildren().add(cancel);
+        if ( !edit )
+            buttons.getChildren().add(cancel);
         buttons.getChildren().add(register);
 
-        cancel.setOnMouseClicked(cancelListener());
+        if ( !edit )
+            cancel.setOnMouseClicked(cancelListener());
         register.setOnMouseClicked(registerButtonListener());
         return buttons;
     }
@@ -125,13 +158,32 @@ public class RegisterPane extends GridPane {
         return btn;
     }
 
+    private ImageView initImageView(){
+        ImageView imgView = new ImageView();
+        imgView.setFitHeight(70);
+        imgView.setFitWidth(70);
+        return imgView;
+    }
+    
     private File chooseImage() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Escolha uma imagem");
         chooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("Imagens", "*.png;*.jpg;*.jpeg")
         );
-        return chooser.showOpenDialog(stage);
+        File imgFile = chooser.showOpenDialog(stage);
+        updateImageView(imgFile);
+        return imgFile;
+    }
+    
+    private void updateImageView(File img){
+        Image image = null;
+        try {
+            image = new Image(new BufferedInputStream(new FileInputStream(img)));
+        } catch (Exception ex) {
+            Logger.getLogger(RegisterPane.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        imageView.setImage(image);
     }
 
     private EventHandler<MouseEvent> cancelListener() {
@@ -147,8 +199,14 @@ public class RegisterPane extends GridPane {
             }
 
             if (!name.isValueValid() || !email.isValueValid()
-                    || !password.isValueValid() || !image.isValueValid()) {
+                    || !image.isValueValid()) {
                 return;
+            }
+            
+            if ( !edit || !password.getText().isEmpty() ){
+                if ( !password.isValueValid() ){
+                    return;
+                }
             }
 
             ProgressIndicator progress = new ProgressIndicator(0);

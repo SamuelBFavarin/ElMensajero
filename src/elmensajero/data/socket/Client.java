@@ -1,4 +1,3 @@
-
 package elmensajero.data.socket;
 
 import elmensajero.Contact;
@@ -125,6 +124,9 @@ public class Client implements Runnable, RetrieveDataListener{
 
     @Override
     public boolean sendMessage(Message message) {
+        if ( message.getReceptor() == null ){
+            return false;
+        }
         try {
             byte res = (byte) makeRequest(RetrieveDataListener.SEND_MESSAGE, message);
             return ( res == RetrieveDataListener.MESSAGE_SENT );
@@ -142,6 +144,7 @@ public class Client implements Runnable, RetrieveDataListener{
         return null;
     }
     
+    @Override
     public String sendFile(File file, final ProgressIndicator progress){
         try {
             Socket requestSocket = new Socket(SocketData.HOST, SocketData.PORT);
@@ -181,6 +184,7 @@ public class Client implements Runnable, RetrieveDataListener{
         return null;
     }
     
+    @Override
     public int newUser(ContactDB contact){
         try {
             return (int) makeRequest(RetrieveDataListener.NEW_USER, contact);
@@ -190,6 +194,17 @@ public class Client implements Runnable, RetrieveDataListener{
         return 0;
     }
     
+    @Override
+    public boolean editUser(ContactDB contact){
+        try {
+            return (boolean) makeRequest(RetrieveDataListener.EDIT_USER, contact);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    @Override
     public ContactDB login(ContactDB contact){
         try {
             return (ContactDB) makeRequest(RetrieveDataListener.LOGIN, contact);

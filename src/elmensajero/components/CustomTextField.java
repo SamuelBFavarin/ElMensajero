@@ -11,6 +11,13 @@ public class CustomTextField extends TextField {
 
     private Validator validator;
 
+    public CustomTextField() {
+    }
+
+    public CustomTextField(String text) {
+        super(text);
+    }
+    
     public void setValidator(Validator validator) {
         this.validator = validator;
     }
