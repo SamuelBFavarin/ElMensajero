@@ -90,7 +90,6 @@ public class ServerRequest {
     private Object getAllMessages(Contact[] contacts) throws Exception{
         Contact a = contacts[0];
         Contact b = contacts[1];
-        System.out.println("Get all messages");
         return Database.searchMessage(a, b);
     }
     
@@ -135,7 +134,7 @@ public class ServerRequest {
         DataInputStream in = new DataInputStream( client.getInputStream() );
 
         SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-        OutputStream out = new BufferedOutputStream(new FileOutputStream("./img/" + filename));
+        OutputStream out = new BufferedOutputStream(new FileOutputStream("../http/img/" + filename));
         int aByte;
         do{
             aByte = in.readInt();

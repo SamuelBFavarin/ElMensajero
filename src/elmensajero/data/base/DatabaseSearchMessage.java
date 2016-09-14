@@ -1,4 +1,3 @@
-
 package elmensajero.data.base;
 
 import elmensajero.Contact;
@@ -40,7 +39,10 @@ public class DatabaseSearchMessage {
                 m[i] = new Message(sender, receptor, res.getString("message"),res.getDate("date"));
                 i++;
                 
-                System.out.println(res.getString("message"));
+//                System.out.println(
+//                    sender.getName() + " -> " + receptor.getName() + " = "
+//                    + "'" +res.getString("message") + "'"
+//                );
              }
             
             return m;

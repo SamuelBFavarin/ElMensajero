@@ -77,9 +77,6 @@ public class ElMensajeroGUI extends BorderPane {
             loadConversation(c);
         });
         conversation.setSendButtonClickedListener((String message) -> {
-            System.out.println("Enviando mensagem:"
-                    + "\nuser: "+userData.getName()
-                    + "\ncontact"+contact.getName());
             Message m = new Message(
                 userData,
                 contact,

@@ -9,10 +9,10 @@ import elmensajero.gui.ElMensajeroGUI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -154,14 +154,12 @@ public class ElMensajero extends Application {
                 login.showError("Algo ocorreu errado na imagem");
                 return;
             }
-            System.out.println("Enviando imagem");
             String image = socketClient.sendFile(imageFile, progress);
             if ( image == null ){
                 login.showError("Erro ao enviar imagem");
                 return;
             }
             try {
-            System.out.println("Imagem enviada");
                 password = UserDataProperties.encode(password);
                 ContactDB user = new ContactDB(name, email, password, image);
                 int res = socketClient.newUser(user);
@@ -208,14 +206,14 @@ public class ElMensajero extends Application {
         }, "Beginning Thread").start();
         
         stage.setOnCloseRequest((WindowEvent t) -> {
+            socketClient.close();
             Platform.exit();
             System.exit(0);
         });
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         launch(args);
-        
     }
     
 }

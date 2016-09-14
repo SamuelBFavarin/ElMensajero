@@ -1,11 +1,9 @@
-
 package elmensajero.data.socket;
 
 import elmensajero.Contact;
 import elmensajero.data.DataListener;
 import elmensajero.data.SocketData;
 import java.net.Socket;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,9 +36,9 @@ public class ServerClients {
     public void addContact(Contact contact,Socket socket){
         clients.put(contact, socket);
         for ( Contact cont : clients.keySet() ){
-            if ( !contact.equals( cont ) ){
+            if ( !cont.equals( contact ) ){
                 Socket client = clients.get( cont );
-                while ( blockedClients.contains( cont ) ){}
+                while ( blockedClients.contains( clients.get(cont) ) ){}
                 blockedClients.add(client);
                 try {
                     SocketData.writeByte(client, DataListener.CONTACT_STATUS_UPDATED);
@@ -55,6 +53,7 @@ public class ServerClients {
     
     public void removeContact(Contact contact){
         contact.setStatus(Contact.Status.OFFLINE);
+        clients.remove(contact);
         for ( Socket client : clients.values() ){
             while ( blockedClients.contains(client) ){}
             blockedClients.add(client);
@@ -66,7 +65,6 @@ public class ServerClients {
             }
             blockedClients.remove(client);
         }
-        clients.remove(contact);
     }
     
 }

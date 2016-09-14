@@ -11,6 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -42,6 +43,14 @@ public class Client implements Runnable, RetrieveDataListener{
         }
         this.contact = contact;
         thread.start();
+    }
+    
+    public void close(){
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @Override
