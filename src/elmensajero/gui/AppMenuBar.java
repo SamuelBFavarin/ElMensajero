@@ -7,6 +7,7 @@ import elmensajero.data.base.ContactDB;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -122,10 +123,12 @@ public class AppMenuBar extends MenuBar implements LoginGUI.LoginListener{
                 boolean res = retrieveDataListener.editUser(user);
                 if ( res ){
                     UserDataProperties.setUserData(user);
-                    editAlert.getButtonTypes().add(ButtonType.OK);
-                    editAlert.close();
-                    editAlert.getButtonTypes().setAll();
-                    mainGUI.setUserData(user);
+                    Platform.runLater(() -> {
+                        editAlert.getButtonTypes().add(ButtonType.OK);
+                        editAlert.close();
+                        editAlert.getButtonTypes().setAll();
+                        mainGUI.setUserData(user);
+                    });
                 } else {
                     loginGUI.showError("Erro na alteração");
                 }
