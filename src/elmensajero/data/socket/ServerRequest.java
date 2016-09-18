@@ -139,7 +139,7 @@ public class ServerRequest {
         DataInputStream in = new DataInputStream( client.getInputStream() );
 
         SocketData.writeByte(client, SocketData.READY_TO_RECEIVE);
-        OutputStream out = new BufferedOutputStream(new FileOutputStream("../http/img/" + filename));
+        OutputStream out = new BufferedOutputStream(new FileOutputStream("../img/" + filename));
         int aByte;
         do{
             aByte = in.readInt();
